@@ -4,7 +4,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Language Technique Trainer — Modes</title>
-
 <style>
   :root{
     --bg-dark-1: #071028;
@@ -60,37 +59,15 @@
 
   header{ display:flex; align-items:center; gap:12px; margin-bottom:8px; }
   h1{ margin:0; font-size:1.15rem; }
+  .subtitle{ font-size:0.95rem; margin-top:4px; color:var(--muted-light); }
+  body.theme-light .subtitle{ color:var(--muted-dark); }
 
-  .top-left{ display:flex; flex-direction:column; gap:6px; }
-
-  .mode-tabs{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
+  .top-left{ display:flex; gap:10px; align-items:center; }
+  .mode-select{
+    padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,0.04);
+    background:transparent; color:var(--muted-light); font-weight:700; cursor:pointer;
   }
-  .mode-tab{
-    padding:7px 12px;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,0.06);
-    background:transparent;
-    color:var(--muted-light);
-    font-weight:700;
-    font-size:0.9rem;
-    cursor:pointer;
-    transition: background .15s ease, color .15s ease, box-shadow .15s ease, transform .1s ease;
-  }
-  .mode-tab.active{
-    background: linear-gradient(90deg,var(--accent),var(--accent2));
-    color:#012;
-    box-shadow:0 8px 20px rgba(12,18,40,0.25);
-    border:0;
-    transform: translateY(-1px);
-  }
-  body.theme-light .mode-tab{
-    border:1px solid rgba(11,18,32,0.06);
-    color:var(--muted-dark);
-    background:#fff;
-  }
+  body.theme-light .mode-select{ border:1px solid rgba(11,18,32,0.06); color:var(--muted-dark); background:#fff; }
 
   .top-right{ margin-left:auto; display:flex; gap:10px; align-items:center; }
 
@@ -114,37 +91,27 @@
     line-height:1.45;
     border:1px solid rgba(255,255,255,0.03);
     transition: background .25s ease, color .25s ease;
-    min-height:60px;
   }
   body.theme-light .sentence{ background: #fbfdff; border:1px solid rgba(11,18,32,0.04); }
 
-  .answer-wrap{
-    margin-top:12px;
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-  }
-  .answer-label{
-    font-size:0.9rem;
-    color:var(--muted-light);
-  }
-  body.theme-light .answer-label{ color:var(--muted-dark); }
-
-  .answer-input{
-    width:100%;
-    padding:9px 10px;
+  .techniques{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .tech{
+    padding:7px 10px;
     border-radius:8px;
-    border:1px solid rgba(255,255,255,0.06);
-    background:rgba(0,0,0,0.05);
-    color:inherit;
-    font-size:0.95rem;
+    border:1px solid rgba(255,255,255,0.04);
+    background:transparent;
+    color:var(--muted-light);
+    cursor:pointer;
+    font-weight:700;
+    font-size:0.92rem;
+    transition: transform .12s ease, background .12s ease, color .12s ease, box-shadow .12s ease;
+    opacity:0.9;
   }
-  body.theme-light .answer-input{
-    background:#fff;
-    border:1px solid rgba(11,18,32,0.08);
-  }
+  body.theme-light .tech{ color:var(--muted-dark); border:1px solid rgba(11,18,32,0.04); }
+  .tech:hover{ transform: translateY(-3px); }
+  .tech.selected{ background: linear-gradient(90deg,var(--accent),var(--accent2)); color:#012; border:0; box-shadow:0 8px 20px rgba(12,18,40,0.25); }
 
-  .controls{ display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .controls{ display:flex; gap:12px; align-items:center; margin-top:14px; }
 
   .btn{
     padding:10px 14px; border-radius:12px; border:0; cursor:pointer; font-weight:800;
@@ -152,12 +119,14 @@
     transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
   }
 
+  /* Start button: distinct orange gradient */
   .btn.start{
     background: linear-gradient(90deg,#ff7a18,#ffb347);
     color:#fff;
   }
   body.theme-light .btn.start{ background: linear-gradient(90deg,#ff8a2b,#ffc87c); color:#fff; }
 
+  /* Check button: prominent green */
   .btn.check{
     background: linear-gradient(90deg,#16a34a,#10b981);
     color:#fff;
@@ -166,6 +135,7 @@
     border-radius:14px;
   }
 
+  /* New sentence button: prominent blue */
   .btn.next{
     background: linear-gradient(90deg,#2563eb,#06b6d4);
     color:#fff;
@@ -174,6 +144,9 @@
     border-radius:14px;
   }
 
+  .techniques { margin-bottom:6px; }
+  .tech { opacity:0.85; font-size:0.92rem; padding:6px 9px; }
+
   .timer-wrap{ margin-left:auto; display:flex; gap:10px; align-items:center; }
   .timer{ font-weight:800; padding:8px 12px; border-radius:10px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); color:var(--accent2); }
   body.theme-light .timer{ background: #fff; border:1px solid rgba(11,18,32,0.04); color:var(--accent-dark); }
@@ -181,69 +154,10 @@
   .progress{ height:8px; background: rgba(255,255,255,0.03); border-radius:999px; overflow:hidden; width:220px; }
   .progress > i{ display:block; height:100%; background: linear-gradient(90deg,var(--accent),var(--accent2)); width:0%; transition: width .3s linear; }
 
-  .small-inputs{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    align-items:center;
-    font-size:0.9rem;
-    color:var(--muted-light);
-  }
-  body.theme-light .small-inputs{ color:var(--muted-dark); }
-
-  .small-inputs input{
-    width:70px;
-    padding:5px 7px;
-    border-radius:8px;
-    border:1px solid rgba(255,255,255,0.06);
-    background:rgba(0,0,0,0.05);
-    color:inherit;
-    font-size:0.9rem;
-  }
-  body.theme-light .small-inputs input{
-    background:#fff;
-    border:1px solid rgba(11,18,32,0.08);
-  }
-
   #feedback{ margin-top:12px; font-size:0.98rem; color:var(--muted-light); }
   body.theme-light #feedback{ color:var(--muted-dark); }
   .scoreboard{ margin-top:10px; color:var(--muted-light); font-weight:700; }
   body.theme-light .scoreboard{ color:var(--muted-dark); }
-
-  .hidden{ display:none !important; }
-
-  .custom-config{
-    margin-top:10px;
-    padding:10px;
-    border-radius:10px;
-    border:1px dashed rgba(255,255,255,0.08);
-    font-size:0.9rem;
-  }
-  body.theme-light .custom-config{
-    border-color:rgba(11,18,32,0.12);
-    background:#f9fbff;
-  }
-  .custom-config textarea,
-  .custom-config input{
-    width:100%;
-    margin-top:4px;
-    margin-bottom:8px;
-    padding:7px 8px;
-    border-radius:8px;
-    border:1px solid rgba(255,255,255,0.06);
-    background:rgba(0,0,0,0.05);
-    color:inherit;
-    font-size:0.9rem;
-  }
-  body.theme-light .custom-config textarea,
-  body.theme-light .custom-config input{
-    background:#fff;
-    border:1px solid rgba(11,18,32,0.08);
-  }
-  .custom-config label{
-    font-weight:600;
-    font-size:0.9rem;
-  }
 
   @media (max-width:640px){
     .controls{ flex-wrap:wrap; }
@@ -252,451 +166,356 @@
   }
 </style>
 </head>
-
 <body>
   <div class="wrap" role="main">
     <header>
       <div class="top-left">
-        <h1>Language Technique Trainer</h1>
-
-        <div class="mode-tabs" id="modeTabs" aria-label="Mode selection">
-          <button class="mode-tab active" data-mode="random">Random</button>
-          <button class="mode-tab" data-mode="handmaids">Handmaid's Tale</button>
-          <button class="mode-tab" data-mode="custom">Custom</button>
-          <button class="mode-tab" data-mode="revision">Revision</button>
-        </div>
+        <label for="modeSelect" style="font-weight:800;margin-right:6px">Mode</label>
+        <select id="modeSelect" class="mode-select" aria-label="Choose game mode">
+          <option value="random">Random</option>
+          <option value="handmaids">Handmaid's Tale</option>
+          <option value="duffy">Duffy poems</option>
+          <option value="paris">Paris anthology</option>
+        </select>
       </div>
 
-      <div class="top-right">
+      <div>
+        <h1 style="margin:0">Language Technique Trainer</h1>
+      </div>
+
+      <div class="top-right" aria-hidden="false">
         <button id="themeToggle" class="theme-toggle" aria-pressed="false" title="Toggle light / dark mode">
           🌙 <span id="themeLabel">Dark</span>
         </button>
       </div>
     </header>
 
-    <div class="card">
-      <div class="meta" id="metaText">
-        Choose a mode, set how many questions and how long you want, then start the round. Type the techniques you spot (e.g. <em>metaphor, asyndetic list</em>).
-      </div>
+    <div class="card" role="region" aria-label="Trainer card">
+      <div class="meta">Start the round, then click any technique you spot in the sentence. You have <strong>2 minutes</strong> per question.</div>
 
-      <div class="sentence" id="sentence" aria-live="polite">Click a mode and press Start to begin.</div>
+      <div class="sentence" id="sentence" aria-live="polite">Loading…</div>
 
-      <div class="answer-wrap">
-        <div class="answer-label">Type all techniques you can see (comma‑separated):</div>
-        <input id="answerInput" class="answer-input" type="text" placeholder="e.g. metaphor, personification, asyndetic list" autocomplete="off" />
-      </div>
+      <div class="techniques" id="techniques" aria-label="Technique buttons"></div>
 
-      <div id="customConfig" class="custom-config hidden">
-        <div><strong>Custom mode setup</strong> — enter one sentence and its techniques before starting.</div>
+      <div class="controls" role="toolbar" aria-label="Game controls">
+        <button id="startBtn" class="btn start" aria-label="Start round">Start</button>
 
-        <label for="customSentence">Custom sentence:</label>
-        <textarea id="customSentence" rows="3" placeholder="Type your sentence here..."></textarea>
+        <button id="checkBtn" class="btn check" aria-label="Check answers">Check</button>
+        <button id="nextBtn" class="btn next" aria-label="New sentence">New sentence</button>
 
-        <label for="customTechniques">Techniques for this sentence (comma‑separated):</label>
-        <input id="customTechniques" type="text" placeholder="e.g. metaphor, semantic field, direct address" />
-      </div>
-
-      <div class="controls">
-        <button id="startBtn" class="btn start">Start round</button>
-        <button id="checkBtn" class="btn check">Check</button>
-        <button id="nextBtn" class="btn next">Next</button>
-
-        <div class="small-inputs" id="examConfig">
-          <span>Questions:</span>
-          <input id="questionCount" type="number" min="1" max="50" value="10" />
-
-          <span>Timer (mins):</span>
-          <input id="timerMinutes" type="number" min="1" max="60" value="10" />
-        </div>
-
-        <div class="timer-wrap" id="timerWrap">
-          <div class="progress"><i id="progressBar"></i></div>
-          <div class="timer" id="timer">10:00</div>
+        <div class="timer-wrap" aria-hidden="false">
+          <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+          <div class="timer" id="timer" aria-live="polite">02:00</div>
         </div>
       </div>
 
-      <div id="feedback"></div>
-      <div class="scoreboard" id="scoreboard">Rounds: 0 • Total score: 0 • Questions left: 0</div>
+      <div id="feedback" role="status"></div>
+      <div class="scoreboard" id="scoreboard" aria-live="polite">Rounds: 0 • Total score: 0</div>
     </div>
   </div>
 
-<!-- PART 2 (JavaScript) will be added next -->
 <script>
-/* ============================================================
-   TECHNIQUE LIST (INCLUDING SENTENCE STRUCTURES)
-   ============================================================ */
-const QUIZLET_TERMS = [
-  // Original techniques
-  "Sibilant alliteration 's'",
-  "Fricative alliteration 'f' 'v'",
-  "Plosive alliteration 'p' 'b'",
-  "Dental alliteration 'd' 't'",
-  "Guttural alliteration 'g' 'c' 'k'",
-  "Assonance (vowel repetition)",
-  "Aphorism",
-  "Synaesthesia",
-  "Direct Address",
-  "Juxtaposition",
-  "Neologism",
-  "Grice: quantity",
-  "Grice: quality",
-  "Grice: relevance",
-  "Grice: manner",
-  "Lexical onomatopoeia",
-  "Superlative",
-  "Prosodic stress",
-  "Sibilance (soft 's' sounds)",
-  "Alliteration (general)",
-  "Metaphor",
-  "Simile",
-  "Personification",
-  "Oxymoron",
-  "Semantic field",
-  "Asyndetic list",
-  "Syndetic list",
-  "Person deixis",
-  "Spatial deixis",
-  "Temporal deixis",
-  "Proximal deixis",
-  "Distal deixis",
-  "Graphology",
-  "Phonology",
-  "Lexis",
-  "Semantics (literal meaning)",
-  "Pragmatics (implied meaning)",
-  "Verb phrase",
-  "Noun phrase",
-  "Zoomorphism",
-  "Anthropomorphism",
-  "Hendiadys",
-  "Hyperlage",
-  "Jargon",
-  "Rebus",
-  "Premodifying adj.",
-  "Euphemism",
-  "Dysphemism",
-  "Idiom",
+  /* ====== Technique list (kept compact) ====== */
+  const QUIZLET_TERMS = [
+    "Sibilant alliteration 's'",
+    "Fricative alliteration 'f' 'v'",
+    "Plosive alliteration 'p' 'b'",
+    "Dental alliteration 'd' 't'",
+    "Guttural alliteration 'g' 'c' 'k'",
+    "Assonance (vowel repetition)",
+    "Aphorism",
+    "Synaesthesia",
+    "Direct Address",
+    "Juxtaposition",
+    "Neologism",
+    "Grice: quantity",
+    "Grice: quality",
+    "Grice: relevance",
+    "Grice: manner",
+    "Lexical onomatopoeia",
+    "Superlative",
+    "Prosodic stress",
+    "Sibilance (soft 's' sounds)",
+    "Alliteration (general)",
+    "Metaphor",
+    "Simile",
+    "Personification",
+    "Oxymoron",
+    "Semantic field",
+    "Asyndetic list",
+    "Syndetic list",
+    "Person deixis",
+    "Spatial deixis",
+    "Temporal deixis",
+    "Proximal deixis",
+    "Distal deixis",
+    "Graphology",
+    "Phonology",
+    "Lexis",
+    "Semantics (literal meaning)",
+    "Pragmatics (implied meaning)",
+    "Verb phrase",
+    "Noun phrase",
+    "Zoomorphism",
+    "Anthropomorphism",
+    "Hendiadys",
+    "Hyperlage",
+    "Jargon",
+    "Rebus",
+    "Premodifying adj.",
+    "Euphemism",
+    "Dysphemism",
+    "Idiom"
+  ];
 
-  // NEW: Sentence structures
-  "Simple sentence",
-  "Compound sentence",
-  "Complex sentence",
-  "Compound–complex sentence",
-  "Minor sentence",
-  "Fragmentation"
-];
+  /* ====== Mode-specific sentence pools ====== */
+  const MODE_POOLS = {
+    random: [
+      {text:"He eats, sleeps, breathes and dreams about the game.", techniques:["Asyndetic list"]},
+      {text:"We need bread and milk and eggs and flour for the shop.", techniques:["Syndetic list"]},
+      {text:"I'll be there tomorrow; you'll see me then.", techniques:["Person deixis","Temporal deixis"]},
+      {text:"This book on the table belongs to her.", techniques:["Proximal deixis","Noun phrase"]},
+      {text:"The poster used bold font and wide spacing to grab attention.", techniques:["Graphology","Lexis"]},
+      {text:"Softly the sea sighed and the shore answered with a hush.", techniques:["Sibilant alliteration 's'","Personification"]},
+      {text:"They called the app 'Moodify' and the name caught on quickly.", techniques:["Neologism","Lexis"]},
+      {text:"The cat moved like a small king, proud and slow.", techniques:["Zoomorphism","Anthropomorphism"]},
+      {text:"She said 'fast and furious' to join two strong ideas.", techniques:["Hendiadys","Lexis"]},
+      {text:"The kettle hissed until the whistle broke the quiet morning.", techniques:["Lexical onomatopoeia","Phonology"]},
+      {text:"They called his dismissal 'a change in staffing' — a gentle euphemism.", techniques:["Euphemism","Pragmatics (implied meaning)"]},
+      {text:"He was labelled 'a troublemaker' — a harsh dysphemism that stuck.", techniques:["Dysphemism","Pragmatics (implied meaning)"]},
+      {text:"'If it ain't broke, don't fix it' — an old aphorism people repeat.", techniques:["Aphorism","Lexis"]},
+      {text:"She told him to 'break a leg' before the show — a common idiom.", techniques:["Idiom","Direct Address"]},
+      {text:"The advert promised the best, the brightest, the boldest.", techniques:["Superlative","Triplet"]},
+      {text:"She used words like weapons: precise, pointed, sharp.", techniques:["Premodifying adj.","Alliteration (general)"]},
+      {text:"The bell rang once and the town fell silent.", techniques:["Lexical onomatopoeia","Pathetic fallacy"]},
+      {text:"The old house groaned as if remembering other lives.", techniques:["Personification","Zoomorphism"]},
+      {text:"The slogan used stress in speech: 'Buy now!'", techniques:["Prosodic stress","Graphology"]}
+    ],
 
-/* ============================================================
-   SENTENCE STRUCTURE CLASSIFIER
-   ============================================================ */
-function classifyStructure(text) {
-  const t = text.trim();
+    /* Handmaid's Tale mode: replaced with the user-provided lines (kept as practice sentences).
+       Each sentence is tagged with plausible techniques for spotting. */
+    handmaids: [
+      {text: `A chair, a table, a lamp. Above, on the white ceiling, a relief ornament in the shape of a wreath, and in the center of it a blank space, plastered over, like the place in a face where an eye has been taken out.`, techniques:["Asyndetic list","Imagery","Simile"]},
+      {text: `We produce our passes, from the pockets of our red cloaks. They are inspected, feathered with the light of the sun, and returned. We walk on. The sidewalk is red brick. Here and there are patches of old snow, like dried spit.`, techniques:["Verb phrase","Graphology","Simile"]},
+      {text: `The night is mine, my own time, to do with as I will, as long as I am quiet. As long as I don't move. As long as I lie still. The night is my time out. Where should I go? Somewhere good.`, techniques:["Repetition","Anaphora","Direct Address"]},
+      {text: `Books and books and books, right out in plain view, no locks, no boxes. No one was there, no one to inhibit me.`, techniques:["Repetition","Asyndetic list","Premodifying adj."]},
+      {text: `There is more than one kind of freedom, said Aunt Lydia. Freedom to and freedom from. In the days of anarchy, it was freedom to. Now you are being given freedom from. Don't underrate it.`, techniques:["Direct Address","Aphorism","Juxtaposition"]},
+      {text: `Thinking can hurt your chances, and I intend to last. I know why there is no glass, in these windows, in front of this picture of blue iris, and why the window opens only partly and why the glass in it is shatterproof. It isn’t running away they’re afraid of. We wouldn't get far. It’s those other escapes, the ones you can open in yourself, given a cutting edge.`, techniques:["Pragmatics (implied meaning)","Noun phrase","Semantic field"]},
+      {text: `The heads are the heads of snowmen, with the features painted on by a child. With a red felt pen, to make them look like real people. The heads are zeroes.`, techniques:["Metaphor","Juxtaposition","Graphology"]},
+      {text: `We lived, as usual, by ignoring. Like today’s newspapers. It was settled in the cupboards, it was in the way we took our coffee, it was in the skin of our hands. Waste not want not. I am not being wasted. Why do I want?`, techniques:["Anaphora","Aphorism","Pragmatics (implied meaning)"]},
+      {text: `Tell, rather than write, because I have nothing to write with and writing is in any case forbidden.`, techniques:["Direct Address","Pragmatics (implied meaning)","Verb phrase"]},
+      {text: `Blessed are the meek. She didn’t go on to say anything about inheriting the earth.`, techniques:["Aphorism","Irony","Juxtaposition"]},
+      {text: `Under His Eye.`, techniques:["Graphology","Direct Address","Pragmatics (implied meaning)"]},
+      {text: `I hunger to commit the act of touch.`, techniques:["Direct Address","Pragmatics (implied meaning)","Verb phrase"]},
+      {text: `My self is a thing I must now compose, as one composes a speech. What I must present is a made thing, not something born.`, techniques:["Metaphor","Noun phrase","Premodifying adj."]},
+      {text: `I move my foot in the bed, back and forth, before and after.`, techniques:["Repetition","Verb phrase","Asyndetic list"]},
+      {text: `Moira was like an elevator with open sides. She made us dizzy. Already we were losing the taste for freedom, already we were finding these walls secure.`, techniques:["Simile","Repetition","Juxtaposition"]},
+      {text: `He was reachable, untouchable.`, techniques:["Oxymoron","Juxtaposition","Premodifying adj."]},
+      {text: `A rat in a maze is free to go anywhere, as long as it stays inside the maze.`, techniques:["Metaphor","Juxtaposition","Semantic field"]},
+      {text: `Nolite te bastardes carborundorum.`, techniques:["Direct Address","Idiom","Graphology"]},
+      {text: `We are two-legged wombs, that’s all: sacred vessels, ambulatory chalices.`, techniques:["Metaphor","Juxtaposition","Premodifying adj."]},
+      {text: `I am a generator, individual, edible.`, techniques:["Asyndetic list","Noun phrase","Premodifying adj."]},
+      {text: `Each month I watch for blood, fearfully, for when it comes it means failure.`, techniques:["Verb phrase","Semantic field","Pragmatics (implied meaning)"]},
+      {text: `I’m a cloud, congealed around a central object, the shape of a pear, which is hard and more real than I am and glows red within its translucent shell.`, techniques:["Metaphor","Imagery","Synaesthesia"]},
+      {text: `Give me children, or else I die. There are only women who are fruitful and women who are barren, that's the law.`, techniques:["Aphorism","Juxtaposition","Pragmatics (implied meaning)"]},
+      {text: `The small person inside me, who would like to say I am here, but has no voice.`, techniques:["Metaphor","Noun phrase","Pragmatics (implied meaning)"]},
+      {text: `Everything they taught at the Red Centre was true: I am a natural resource.`, techniques:["Aphorism","Metaphor","Semantic field"]},
+      {text: `I sink down into my body as into a swamp, fenland, where only I know the way. My body seems outdated.`, techniques:["Metaphor","Imagery","Premodifying adj."]},
+      {text: `To be a man, watched by women. It must be entirely strange. To have them looking at him all the time, as if he’s a fountain, a trickler.`, techniques:["Juxtaposition","Simile","Semantic field"]},
+      {text: `The seed of the fruit, the promise of the future. It’s not the husband’s, it’s the state’s.`, techniques:["Metaphor","Juxtaposition","Semantic field"]}
+    ],
 
-  // Minor sentence / Fragmentation
-  if (!/[a-zA-Z]/.test(t) || !/[a-zA-Z]/.test(t.replace(/[^\w\s]/g, ""))) {
-    return ["Minor sentence", "Fragmentation"];
+    duffy: [
+      {text:"She kept his letters in a box, each one a small, bright lie.", techniques:["Metaphor","Juxtaposition","Noun phrase"]},
+      {text:"The city hummed; she walked through it like a ghost.", techniques:["Personification","Simile","Phonology"]},
+      {text:"He said her name and the room filled with memory.", techniques:["Direct Address","Synaesthesia","Semantic field"]},
+      {text:"She stitched the past into the present, thread by careful thread.", techniques:["Metaphor","Verb phrase","Anaphora"]},
+      {text:"The mirror showed a face she almost recognised.", techniques:["Juxtaposition","Imagery","Pragmatics (implied meaning)"]},
+      {text:"She used small jokes to soften the sharp edges of truth.", techniques:["Euphemism","Premodifying adj.","Lexis"]},
+      {text:"The rain tapped like a slow, patient hand on the window.", techniques:["Lexical onomatopoeia","Simile","Personification"]}
+    ],
+
+    paris: [
+      {text:"The river carried lights like coins along its dark skin.", techniques:["Simile","Imagery","Semantic field"]},
+      {text:"Cafes spilled warmth onto the pavement; voices rose and fell.", techniques:["Personification","Sibilance (soft 's' sounds)","Graphology"]},
+      {text:"He watched the bridge, patient as a sentinel.", techniques:["Simile","Metaphor","Noun phrase"]},
+      {text:"The postcard said 'wish you were here' in a neat, small hand.", techniques:["Direct Address","Graphology","Pragmatics (implied meaning)"]},
+      {text:"Autumn leaves gathered like small, tired crowds on the quay.", techniques:["Simile","Personification","Semantic field"]},
+      {text:"She ordered coffee and the barista smiled, a practiced kindness.", techniques:["Premodifying adj.","Lexis","Pragmatics (implied meaning)"]}
+    ]
+  };
+
+  /* ====== State & DOM refs ====== */
+  let currentPool = MODE_POOLS.random;
+  let current = null;
+  let selected = new Set();
+  let totalScore = 0;
+  let roundsPlayed = 0;
+  let timerId = null;
+  let timeLeft = 120;
+  let started = false;
+
+  const sentenceEl = document.getElementById('sentence');
+  const techniquesEl = document.getElementById('techniques');
+  const feedbackEl = document.getElementById('feedback');
+  const startBtn = document.getElementById('startBtn');
+  const checkBtn = document.getElementById('checkBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const timerEl = document.getElementById('timer');
+  const progressBar = document.getElementById('progressBar');
+  const scoreboardEl = document.getElementById('scoreboard');
+  const modeSelect = document.getElementById('modeSelect');
+  const themeToggle = document.getElementById('themeToggle');
+  const themeLabel = document.getElementById('themeLabel');
+
+  /* ====== Theme handling (light/dark) ====== */
+  function applyTheme(theme){
+    document.body.classList.remove('theme-dark','theme-light');
+    document.body.classList.add(theme === 'light' ? 'theme-light' : 'theme-dark');
+    localStorage.setItem('trainerTheme', theme);
+    themeToggle.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+    themeLabel.textContent = theme === 'light' ? 'Light' : 'Dark';
   }
-  if (!/[a-zA-Z]/.test(t.split(" ").find(w => /[a-zA-Z]/.test(w)))) {
-    return ["Minor sentence", "Fragmentation"];
-  }
-  if (!/[a-zA-Z]/.test(t) || !/[a-z]/.test(t)) {
-    return ["Minor sentence", "Fragmentation"];
-  }
-  if (!/[a-z]/.test(t.replace(/[^a-z]/gi, ""))) {
-    return ["Minor sentence", "Fragmentation"];
-  }
-
-  // Check for verbs (very rough)
-  const hasVerb = /\b(am|is|are|was|were|be|being|been|have|has|had|do|does|did|[a-z]+ing|[a-z]+ed)\b/i.test(t);
-  if (!hasVerb) return ["Minor sentence", "Fragmentation"];
-
-  // Count clauses
-  const subordinators = /\b(although|because|since|when|while|after|before|if|unless|that|which|who|whom|whose|where|whereas)\b/i;
-  const coordinators = /\b(and|but|or|nor|for|yet|so)\b/i;
-
-  const hasSub = subordinators.test(t);
-  const hasCoord = coordinators.test(t);
-
-  if (hasSub && hasCoord) return ["Compound–complex sentence"];
-  if (hasSub) return ["Complex sentence"];
-  if (hasCoord) return ["Compound sentence"];
-  return ["Simple sentence"];
-}
-
-/* ============================================================
-   MODE POOLS WITH STRUCTURE TAGS ADDED
-   ============================================================ */
-function addStructuresToPool(pool) {
-  return pool.map(item => {
-    const structures = classifyStructure(item.text);
-    return {
-      text: item.text,
-      techniques: [...item.techniques, ...structures]
-    };
+  const savedTheme = localStorage.getItem('trainerTheme') || 'dark';
+  applyTheme(savedTheme);
+  themeToggle.addEventListener('click', () => {
+    const newTheme = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
+    applyTheme(newTheme);
   });
-}
 
-const MODE_POOLS = {
-  random: addStructuresToPool([
-    {text:"He eats, sleeps, breathes and dreams about the game.", techniques:["Asyndetic list"]},
-    {text:"We need bread and milk and eggs and flour for the shop.", techniques:["Syndetic list"]},
-    {text:"I'll be there tomorrow; you'll see me then.", techniques:["Person deixis","Temporal deixis"]},
-    {text:"This book on the table belongs to her.", techniques:["Proximal deixis","Noun phrase"]},
-    {text:"The poster used bold font and wide spacing to grab attention.", techniques:["Graphology","Lexis"]},
-    {text:"Softly the sea sighed and the shore answered with a hush.", techniques:["Sibilant alliteration 's'","Personification"]},
-    {text:"They called the app 'Moodify' and the name caught on quickly.", techniques:["Neologism","Lexis"]},
-    {text:"The cat moved like a small king, proud and slow.", techniques:["Zoomorphism","Anthropomorphism"]},
-    {text:"She said 'fast and furious' to join two strong ideas.", techniques:["Hendiadys","Lexis"]},
-    {text:"The kettle hissed until the whistle broke the quiet morning.", techniques:["Lexical onomatopoeia","Phonology"]},
-    {text:"They called his dismissal 'a change in staffing' — a gentle euphemism.", techniques:["Euphemism","Pragmatics (implied meaning)"]},
-    {text:"He was labelled 'a troublemaker' — a harsh dysphemism that stuck.", techniques:["Dysphemism","Pragmatics (implied meaning)"]},
-    {text:"'If it ain't broke, don't fix it' — an old aphorism people repeat.", techniques:["Aphorism","Lexis"]},
-    {text:"She told him to 'break a leg' before the show — a common idiom.", techniques:["Idiom","Direct Address"]},
-    {text:"The advert promised the best, the brightest, the boldest.", techniques:["Superlative","Triplet"]},
-    {text:"She used words like weapons: precise, pointed, sharp.", techniques:["Premodifying adj.","Alliteration (general)"]},
-    {text:"The bell rang once and the town fell silent.", techniques:["Lexical onomatopoeia","Pathetic fallacy"]},
-    {text:"The old house groaned as if remembering other lives.", techniques:["Personification","Zoomorphism"]},
-    {text:"The slogan used stress in speech: 'Buy now!'", techniques:["Prosodic stress","Graphology"]}
-  ]),
+  /* ====== Helpers ====== */
+  function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function formatTime(s){ return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
 
-  handmaids: addStructuresToPool([
-    {text:`A chair, a table, a lamp. Above, on the white ceiling, a relief ornament...`, techniques:["Asyndetic list","Imagery","Simile"]},
-    {text:`We produce our passes, from the pockets of our red cloaks...`, techniques:["Verb phrase","Graphology","Simile"]},
-    {text:`The night is mine, my own time, to do with as I will...`, techniques:["Repetition","Anaphora","Direct Address"]},
-    {text:`Books and books and books, right out in plain view...`, techniques:["Repetition","Asyndetic list","Premodifying adj."]},
-    {text:`There is more than one kind of freedom, said Aunt Lydia...`, techniques:["Direct Address","Aphorism","Juxtaposition"]},
-    {text:`Thinking can hurt your chances, and I intend to last...`, techniques:["Pragmatics (implied meaning)","Noun phrase","Semantic field"]},
-    {text:`The heads are the heads of snowmen...`, techniques:["Metaphor","Juxtaposition","Graphology"]},
-    {text:`We lived, as usual, by ignoring...`, techniques:["Anaphora","Aphorism","Pragmatics (implied meaning)"]},
-    {text:`Tell, rather than write...`, techniques:["Direct Address","Pragmatics (implied meaning)","Verb phrase"]},
-    {text:`Blessed are the meek...`, techniques:["Aphorism","Irony","Juxtaposition"]},
-    {text:`Under His Eye.`, techniques:["Graphology","Direct Address","Pragmatics (implied meaning)"]},
-    {text:`I hunger to commit the act of touch.`, techniques:["Direct Address","Pragmatics (implied meaning)","Verb phrase"]},
-    {text:`My self is a thing I must now compose...`, techniques:["Metaphor","Noun phrase","Premodifying adj."]},
-    {text:`I move my foot in the bed...`, techniques:["Repetition","Verb phrase","Asyndetic list"]},
-    {text:`Moira was like an elevator...`, techniques:["Simile","Repetition","Juxtaposition"]},
-    {text:`He was reachable, untouchable.`, techniques:["Oxymoron","Juxtaposition","Premodifying adj."]},
-    {text:`A rat in a maze is free to go anywhere...`, techniques:["Metaphor","Juxtaposition","Semantic field"]},
-    {text:`Nolite te bastardes carborundorum.`, techniques:["Direct Address","Idiom","Graphology"]},
-    {text:`We are two-legged wombs...`, techniques:["Metaphor","Juxtaposition","Premodifying adj."]},
-    {text:`I am a generator, individual, edible.`, techniques:["Asyndetic list","Noun phrase","Premodifying adj."]},
-    {text:`Each month I watch for blood...`, techniques:["Verb phrase","Semantic field","Pragmatics (implied meaning)"]},
-    {text:`I’m a cloud, congealed around a central object...`, techniques:["Metaphor","Imagery","Synaesthesia"]},
-    {text:`Give me children, or else I die...`, techniques:["Aphorism","Juxtaposition","Pragmatics (implied meaning)"]},
-    {text:`The small person inside me...`, techniques:["Metaphor","Noun phrase","Pragmatics (implied meaning)"]},
-    {text:`Everything they taught at the Red Centre...`, techniques:["Aphorism","Metaphor","Semantic field"]},
-    {text:`I sink down into my body...`, techniques:["Metaphor","Imagery","Premodifying adj."]},
-    {text:`To be a man, watched by women...`, techniques:["Juxtaposition","Simile","Semantic field"]},
-    {text:`The seed of the fruit...`, techniques:["Metaphor","Juxtaposition","Semantic field"]}
-  ])
-};
+  /* ====== Render technique buttons ====== */
+  function renderTechniques(){
+    techniquesEl.innerHTML = '';
+    QUIZLET_TERMS.forEach((label, idx) => {
+      const id = 'q' + idx;
+      const btn = document.createElement('button');
+      btn.className = 'tech';
+      btn.textContent = label;
+      btn.dataset.id = id;
+      btn.type = 'button';
+      btn.onclick = () => {
+        if(!started) return;
+        if(selected.has(id)){ selected.delete(id); btn.classList.remove('selected'); }
+        else { selected.add(id); btn.classList.add('selected'); }
+      };
+      techniquesEl.appendChild(btn);
+    });
+  }
 
-/* ============================================================
-   STATE
-   ============================================================ */
-let currentMode = "random";
-let currentPool = MODE_POOLS.random;
-let current = null;
-
-let totalScore = 0;
-let roundsPlayed = 0;
-let questionsLeft = 0;
-
-let timerId = null;
-let timeLeft = 0;
-let roundActive = false;
-let isRevision = false;
-
-/* ============================================================
-   DOM REFERENCES
-   ============================================================ */
-const sentenceEl = document.getElementById("sentence");
-const feedbackEl = document.getElementById("feedback");
-const startBtn = document.getElementById("startBtn");
-const checkBtn = document.getElementById("checkBtn");
-const nextBtn = document.getElementById("nextBtn");
-const timerEl = document.getElementById("timer");
-const progressBar = document.getElementById("progressBar");
-const scoreboardEl = document.getElementById("scoreboard");
-const themeToggle = document.getElementById("themeToggle");
-const themeLabel = document.getElementById("themeLabel");
-const modeTabs = document.getElementById("modeTabs");
-const metaText = document.getElementById("metaText");
-const timerWrap = document.getElementById("timerWrap");
-const examConfig = document.getElementById("examConfig");
-const questionCountInput = document.getElementById("questionCount");
-const timerMinutesInput = document.getElementById("timerMinutes");
-const answerInput = document.getElementById("answerInput");
-const customConfig = document.getElementById("customConfig");
-const customSentenceInput = document.getElementById("customSentence");
-const customTechniquesInput = document.getElementById("customTechniques");
-
-/* ============================================================
-   THEME HANDLING
-   ============================================================ */
-function applyTheme(theme){
-  document.body.classList.remove("theme-dark","theme-light");
-  document.body.classList.add(theme === "light" ? "theme-light" : "theme-dark");
-  localStorage.setItem("trainerTheme", theme);
-  themeToggle.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
-  themeLabel.textContent = theme === "light" ? "Light" : "Dark";
-}
-applyTheme(localStorage.getItem("trainerTheme") || "dark");
-
-themeToggle.addEventListener("click", () => {
-  const newTheme = document.body.classList.contains("theme-dark") ? "light" : "dark";
-  applyTheme(newTheme);
-});
-
-/* ============================================================
-   HELPERS
-   ============================================================ */
-function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-function formatTime(s){ return String(Math.floor(s/60)).padStart(2,"0") + ":" + String(s%60).padStart(2,"0"); }
-
-function normalizeLabel(label){
-  return (label || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9\s']/g,"")
-    .trim();
-}
-
-function parseUserTechniques(raw){
-  if(!raw) return [];
-  return raw
-    .split(",")
-    .map(t => normalizeLabel(t))
-    .filter(t => t.length > 0);
-}
-
-function flexibleMatch(userTag, correctTag){
-  if(!userTag || !correctTag) return false;
-  if(userTag === correctTag) return true;
-  if(userTag.includes(correctTag) || correctTag.includes(userTag)) return true;
-
-  const userWords = userTag.split(/\s+/);
-  const correctWords = correctTag.split(/\s+/);
-
-  return userWords.some(w => w && correctTag.includes(w)) ||
-         correctWords.some(w => w && userTag.includes(w));
-}
-
-/* ============================================================
-   SENTENCE LOADING
-   ============================================================ */
-function loadSentence(){
-  feedbackEl.innerHTML = "";
-  answerInput.value = "";
-
-  if(currentMode === "custom"){
-    const text = customSentenceInput.value.trim();
-    const techsRaw = customTechniquesInput.value.trim();
-    if(!text || !techsRaw){
-      sentenceEl.textContent = "Add a custom sentence and its techniques, then press Start.";
-      return;
-    }
-    const techs = techsRaw.split(",").map(t => t.trim()).filter(Boolean);
-    const structures = classifyStructure(text);
-    current = { text, techniques: [...techs, ...structures] };
-    sentenceEl.textContent = current.text;
-  } else {
+  /* ====== Load sentence from current pool ====== */
+  function loadSentence(){
+    selected.clear();
+    feedbackEl.innerHTML = '';
+    stopTimer();
+    started = false;
+    timeLeft = 120;
+    updateTimerUI();
     current = pickRandom(currentPool);
     sentenceEl.textContent = current.text;
-  }
-}
-
-/* ============================================================
-   SCORING
-   ============================================================ */
-function showFeedback(correctCount, wrongList, missedList){
-  feedbackEl.innerHTML = `
-    <div><strong style="color:var(--good)">Correct techniques you named:</strong> ${correctCount}</div>
-    <div><strong style="color:var(--bad)">Incorrect / extra:</strong> ${wrongList.length ? wrongList.join(", ") : "None"}</div>
-    <div class="muted">Missed techniques (author tags): ${missedList.length ? missedList.join(", ") : "None"}</div>
-    <div class="muted">All techniques in this sentence: ${current.techniques.join(", ")}</div>
-  `;
-}
-
-function checkAnswers(){
-  if(!current || !roundActive) return;
-
-  const userTagsRaw = parseUserTechniques(answerInput.value);
-  const correctTagsNorm = current.techniques.map(t => normalizeLabel(t));
-
-  let correctCount = 0;
-  let wrongList = [];
-
-  userTagsRaw.forEach(userTag => {
-    const matched = correctTagsNorm.some(ct => flexibleMatch(userTag, ct));
-    if(matched){
-      correctCount++;
-    } else {
-      wrongList.push(userTag);
-    }
-  });
-
-  const missedList = current.techniques.filter(t => {
-    const norm = normalizeLabel(t);
-    const matched = userTagsRaw.some(ut => flexibleMatch(ut, norm));
-    return !matched;
-  });
-
-  totalScore += correctCount;
-  roundsPlayed++;
-  if(!isRevision){
-    questionsLeft = Math.max(0, questionsLeft - 1);
+    renderTechniques();
   }
 
-  showFeedback(correctCount, wrongList, missedList);
+  /* ====== Scoring & feedback ====== */
+  function normalizeLabel(label){
+    return label.toLowerCase().replace(/[^a-z0-9\s']/g,'').trim();
+  }
+
+  function showFeedback(score, wrong, missed){
+    feedbackEl.innerHTML = `
+      <div><strong style="color:var(--good)">Correct picked:</strong> ${score}</div>
+      <div><strong style="color:var(--bad)">Wrong picks:</strong> ${wrong.length ? wrong.join(", ") : "None"}</div>
+      <div class="muted">Missed techniques (author tags): ${missed.length ? missed.join(", ") : "None"}</div>
+      <div class="muted">All techniques in this sentence: ${current.techniques.join(", ")}</div>
+    `;
+  }
+
+  function checkAnswers(){
+    if(!current) return;
+    const correctTags = current.techniques.map(t => normalizeLabel(t));
+    let score = 0, wrong = [];
+    selected.forEach(id => {
+      const label = normalizeLabel(QUIZLET_TERMS[parseInt(id.slice(1))] || '');
+      const matched = correctTags.some(tag => {
+        if (!tag) return false;
+        if (label.includes(tag) || tag.includes(label)) return true;
+        const tagWords = tag.split(/\s+/);
+        return tagWords.some(w => w && label.includes(w));
+      });
+      if(matched) score++;
+      else wrong.push(QUIZLET_TERMS[parseInt(id.slice(1))]);
+    });
+    const missed = current.techniques.filter(t => {
+      const tag = normalizeLabel(t);
+      const matchedBySelection = Array.from(selected).some(id => {
+        const label = normalizeLabel(QUIZLET_TERMS[parseInt(id.slice(1))] || '');
+        if (!label) return false;
+        if (label.includes(tag) || tag.includes(label)) return true;
+        const tagWords = tag.split(/\s+/);
+        return tagWords.some(w => w && label.includes(w));
+      });
+      return !matchedBySelection;
+    });
+    totalScore += score;
+    roundsPlayed++;
+    showFeedback(score, wrong, missed);
+    updateScoreboard();
+    stopTimer();
+    started = false;
+  }
+
+  function updateScoreboard(){ scoreboardEl.textContent = `Rounds: ${roundsPlayed} • Total score: ${totalScore}`; }
+
+  /* ====== Timer functions ====== */
+  function startTimer(){
+    if(timerId) return;
+    started = true;
+    timeLeft = 120;
+    updateTimerUI();
+    timerId = setInterval(()=>{
+      timeLeft--;
+      updateTimerUI();
+      if(timeLeft <= 0){ checkAnswers(); }
+    },1000);
+  }
+  function stopTimer(){ if(timerId){ clearInterval(timerId); timerId = null; } updateTimerUI(); }
+  function updateTimerUI(){
+    timerEl.textContent = formatTime(timeLeft);
+    const pct = Math.max(0, Math.min(100, Math.round((timeLeft/120)*100)));
+    progressBar.style.width = pct + '%';
+    timerEl.style.color = timeLeft <= 15 ? 'var(--bad)' : (document.body.classList.contains('theme-light') ? 'var(--accent-dark)' : 'var(--accent2)');
+  }
+
+  /* ====== Mode switching ====== */
+  modeSelect.addEventListener('change', () => {
+    const mode = modeSelect.value;
+    currentPool = MODE_POOLS[mode] || MODE_POOLS.random;
+    roundsPlayed = 0;
+    totalScore = 0;
+    updateScoreboard();
+    loadSentence();
+  });
+
+  /* ====== Events ====== */
+  startBtn.addEventListener('click', () => {
+    if(!current) loadSentence();
+    if(!started) startTimer();
+  });
+  checkBtn.addEventListener('click', () => {
+    if(!started) return;
+    checkAnswers();
+  });
+  nextBtn.addEventListener('click', () => {
+    loadSentence();
+  });
+
+  /* ====== Init ====== */
+  renderTechniques();
+  loadSentence();
   updateScoreboard();
-
-  if(!isRevision && questionsLeft <= 0){
-    endRound("Round finished — you’ve answered all questions.");
-  }
-}
-
-function updateScoreboard(){
-  scoreboardEl.textContent = `Rounds: ${roundsPlayed} • Total score: ${totalScore} • Questions left: ${isRevision ? "∞" : questionsLeft}`;
-}
-
-/* ============================================================
-   TIMER
-   ============================================================ */
-function startTimer(totalSeconds){
-  if(isRevision){
-    timerWrap.classList.add("hidden");
-    return;
-  }
-  timerWrap.classList.remove("hidden");
-
-  timeLeft = totalSeconds;
-  updateTimerUI(totalSeconds);
-
-  if(timerId) clearInterval(timerId);
-  timerId = setInterval(() => {
-    timeLeft--;
-    updateTimerUI(totalSeconds);
-
-    if(timeLeft <= 0){
-      clearInterval(timerId);
-      timerId = null;
-      checkAnswers();
-      endRound("Time is up — round ended.");
-    }
-  }, 1000);
-}
-
-function stopTimer(){
-  if(timerId){
-    clearInterval(timerId);
-    timerId = null;
-  }
-}
-
-function updateTimerUI(totalSeconds){
-  timerEl.textContent = formatTime(Math.max(0, timeLeft));
-  const pct = totalSeconds > 0 ? Math.max(0, Math.min(100, Math.round((timeLeft/totalSeconds)*100))) : 0;
-  progressBar.style.width = pct + "%";
-
-  timerEl.style.color = timeLeft <= 15
-    ? "var
+</script>
+</body>
+</html>
