@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Language Technique Trainer — Modes</title>
+
 <style>
   :root{
     --bg-dark-1: #071028;
@@ -59,8 +60,6 @@
 
   header{ display:flex; align-items:center; gap:12px; margin-bottom:8px; }
   h1{ margin:0; font-size:1.15rem; }
-  .subtitle{ font-size:0.95rem; margin-top:4px; color:var(--muted-light); }
-  body.theme-light .subtitle{ color:var(--muted-dark); }
 
   .top-left{ display:flex; flex-direction:column; gap:6px; }
 
@@ -253,11 +252,13 @@
   }
 </style>
 </head>
+
 <body>
   <div class="wrap" role="main">
     <header>
       <div class="top-left">
         <h1>Language Technique Trainer</h1>
+
         <div class="mode-tabs" id="modeTabs" aria-label="Mode selection">
           <button class="mode-tab active" data-mode="random">Random</button>
           <button class="mode-tab" data-mode="handmaids">Handmaid's Tale</button>
@@ -266,14 +267,14 @@
         </div>
       </div>
 
-      <div class="top-right" aria-hidden="false">
+      <div class="top-right">
         <button id="themeToggle" class="theme-toggle" aria-pressed="false" title="Toggle light / dark mode">
           🌙 <span id="themeLabel">Dark</span>
         </button>
       </div>
     </header>
 
-    <div class="card" role="region" aria-label="Trainer card">
+    <div class="card">
       <div class="meta" id="metaText">
         Choose a mode, set how many questions and how long you want, then start the round. Type the techniques you spot (e.g. <em>metaphor, asyndetic list</em>).
       </div>
@@ -287,461 +288,415 @@
 
       <div id="customConfig" class="custom-config hidden">
         <div><strong>Custom mode setup</strong> — enter one sentence and its techniques before starting.</div>
+
         <label for="customSentence">Custom sentence:</label>
         <textarea id="customSentence" rows="3" placeholder="Type your sentence here..."></textarea>
+
         <label for="customTechniques">Techniques for this sentence (comma‑separated):</label>
         <input id="customTechniques" type="text" placeholder="e.g. metaphor, semantic field, direct address" />
       </div>
 
-      <div class="controls" role="toolbar" aria-label="Game controls">
-        <button id="startBtn" class="btn start" aria-label="Start round">Start round</button>
-        <button id="checkBtn" class="btn check" aria-label="Check answers">Check</button>
-        <button id="nextBtn" class="btn next" aria-label="Next sentence">Next</button>
+      <div class="controls">
+        <button id="startBtn" class="btn start">Start round</button>
+        <button id="checkBtn" class="btn check">Check</button>
+        <button id="nextBtn" class="btn next">Next</button>
 
         <div class="small-inputs" id="examConfig">
           <span>Questions:</span>
           <input id="questionCount" type="number" min="1" max="50" value="10" />
+
           <span>Timer (mins):</span>
           <input id="timerMinutes" type="number" min="1" max="60" value="10" />
         </div>
 
         <div class="timer-wrap" id="timerWrap">
-          <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
-          <div class="timer" id="timer" aria-live="polite">10:00</div>
+          <div class="progress"><i id="progressBar"></i></div>
+          <div class="timer" id="timer">10:00</div>
         </div>
       </div>
 
-      <div id="feedback" role="status"></div>
-      <div class="scoreboard" id="scoreboard" aria-live="polite">Rounds: 0 • Total score: 0 • Questions left: 0</div>
+      <div id="feedback"></div>
+      <div class="scoreboard" id="scoreboard">Rounds: 0 • Total score: 0 • Questions left: 0</div>
     </div>
   </div>
 
+<!-- PART 2 (JavaScript) will be added next -->
 <script>
-  /* ====== Technique list (kept compact) ====== */
-  const QUIZLET_TERMS = [
-    "Sibilant alliteration 's'",
-    "Fricative alliteration 'f' 'v'",
-    "Plosive alliteration 'p' 'b'",
-    "Dental alliteration 'd' 't'",
-    "Guttural alliteration 'g' 'c' 'k'",
-    "Assonance (vowel repetition)",
-    "Aphorism",
-    "Synaesthesia",
-    "Direct Address",
-    "Juxtaposition",
-    "Neologism",
-    "Grice: quantity",
-    "Grice: quality",
-    "Grice: relevance",
-    "Grice: manner",
-    "Lexical onomatopoeia",
-    "Superlative",
-    "Prosodic stress",
-    "Sibilance (soft 's' sounds)",
-    "Alliteration (general)",
-    "Metaphor",
-    "Simile",
-    "Personification",
-    "Oxymoron",
-    "Semantic field",
-    "Asyndetic list",
-    "Syndetic list",
-    "Person deixis",
-    "Spatial deixis",
-    "Temporal deixis",
-    "Proximal deixis",
-    "Distal deixis",
-    "Graphology",
-    "Phonology",
-    "Lexis",
-    "Semantics (literal meaning)",
-    "Pragmatics (implied meaning)",
-    "Verb phrase",
-    "Noun phrase",
-    "Zoomorphism",
-    "Anthropomorphism",
-    "Hendiadys",
-    "Hyperlage",
-    "Jargon",
-    "Rebus",
-    "Premodifying adj.",
-    "Euphemism",
-    "Dysphemism",
-    "Idiom"
-  ];
+/* ============================================================
+   TECHNIQUE LIST (INCLUDING SENTENCE STRUCTURES)
+   ============================================================ */
+const QUIZLET_TERMS = [
+  // Original techniques
+  "Sibilant alliteration 's'",
+  "Fricative alliteration 'f' 'v'",
+  "Plosive alliteration 'p' 'b'",
+  "Dental alliteration 'd' 't'",
+  "Guttural alliteration 'g' 'c' 'k'",
+  "Assonance (vowel repetition)",
+  "Aphorism",
+  "Synaesthesia",
+  "Direct Address",
+  "Juxtaposition",
+  "Neologism",
+  "Grice: quantity",
+  "Grice: quality",
+  "Grice: relevance",
+  "Grice: manner",
+  "Lexical onomatopoeia",
+  "Superlative",
+  "Prosodic stress",
+  "Sibilance (soft 's' sounds)",
+  "Alliteration (general)",
+  "Metaphor",
+  "Simile",
+  "Personification",
+  "Oxymoron",
+  "Semantic field",
+  "Asyndetic list",
+  "Syndetic list",
+  "Person deixis",
+  "Spatial deixis",
+  "Temporal deixis",
+  "Proximal deixis",
+  "Distal deixis",
+  "Graphology",
+  "Phonology",
+  "Lexis",
+  "Semantics (literal meaning)",
+  "Pragmatics (implied meaning)",
+  "Verb phrase",
+  "Noun phrase",
+  "Zoomorphism",
+  "Anthropomorphism",
+  "Hendiadys",
+  "Hyperlage",
+  "Jargon",
+  "Rebus",
+  "Premodifying adj.",
+  "Euphemism",
+  "Dysphemism",
+  "Idiom",
 
-  /* ====== Mode-specific sentence pools ====== */
-  const MODE_POOLS = {
-    random: [
-      {text:"He eats, sleeps, breathes and dreams about the game.", techniques:["Asyndetic list"]},
-      {text:"We need bread and milk and eggs and flour for the shop.", techniques:["Syndetic list"]},
-      {text:"I'll be there tomorrow; you'll see me then.", techniques:["Person deixis","Temporal deixis"]},
-      {text:"This book on the table belongs to her.", techniques:["Proximal deixis","Noun phrase"]},
-      {text:"The poster used bold font and wide spacing to grab attention.", techniques:["Graphology","Lexis"]},
-      {text:"Softly the sea sighed and the shore answered with a hush.", techniques:["Sibilant alliteration 's'","Personification"]},
-      {text:"They called the app 'Moodify' and the name caught on quickly.", techniques:["Neologism","Lexis"]},
-      {text:"The cat moved like a small king, proud and slow.", techniques:["Zoomorphism","Anthropomorphism"]},
-      {text:"She said 'fast and furious' to join two strong ideas.", techniques:["Hendiadys","Lexis"]},
-      {text:"The kettle hissed until the whistle broke the quiet morning.", techniques:["Lexical onomatopoeia","Phonology"]},
-      {text:"They called his dismissal 'a change in staffing' — a gentle euphemism.", techniques:["Euphemism","Pragmatics (implied meaning)"]},
-      {text:"He was labelled 'a troublemaker' — a harsh dysphemism that stuck.", techniques:["Dysphemism","Pragmatics (implied meaning)"]},
-      {text:"'If it ain't broke, don't fix it' — an old aphorism people repeat.", techniques:["Aphorism","Lexis"]},
-      {text:"She told him to 'break a leg' before the show — a common idiom.", techniques:["Idiom","Direct Address"]},
-      {text:"The advert promised the best, the brightest, the boldest.", techniques:["Superlative","Triplet"]},
-      {text:"She used words like weapons: precise, pointed, sharp.", techniques:["Premodifying adj.","Alliteration (general)"]},
-      {text:"The bell rang once and the town fell silent.", techniques:["Lexical onomatopoeia","Pathetic fallacy"]},
-      {text:"The old house groaned as if remembering other lives.", techniques:["Personification","Zoomorphism"]},
-      {text:"The slogan used stress in speech: 'Buy now!'", techniques:["Prosodic stress","Graphology"]}
-    ],
+  // NEW: Sentence structures
+  "Simple sentence",
+  "Compound sentence",
+  "Complex sentence",
+  "Compound–complex sentence",
+  "Minor sentence",
+  "Fragmentation"
+];
 
-    handmaids: [
-      {text: `A chair, a table, a lamp. Above, on the white ceiling, a relief ornament in the shape of a wreath, and in the center of it a blank space, plastered over, like the place in a face where an eye has been taken out.`, techniques:["Asyndetic list","Imagery","Simile"]},
-      {text: `We produce our passes, from the pockets of our red cloaks. They are inspected, feathered with the light of the sun, and returned. We walk on. The sidewalk is red brick. Here and there are patches of old snow, like dried spit.`, techniques:["Verb phrase","Graphology","Simile"]},
-      {text: `The night is mine, my own time, to do with as I will, as long as I am quiet. As long as I don't move. As long as I lie still. The night is my time out. Where should I go? Somewhere good.`, techniques:["Repetition","Anaphora","Direct Address"]},
-      {text: `Books and books and books, right out in plain view, no locks, no boxes. No one was there, no one to inhibit me.`, techniques:["Repetition","Asyndetic list","Premodifying adj."]},
-      {text: `There is more than one kind of freedom, said Aunt Lydia. Freedom to and freedom from. In the days of anarchy, it was freedom to. Now you are being given freedom from. Don't underrate it.`, techniques:["Direct Address","Aphorism","Juxtaposition"]},
-      {text: `Thinking can hurt your chances, and I intend to last. I know why there is no glass, in these windows, in front of this picture of blue iris, and why the window opens only partly and why the glass in it is shatterproof. It isn’t running away they’re afraid of. We wouldn't get far. It’s those other escapes, the ones you can open in yourself, given a cutting edge.`, techniques:["Pragmatics (implied meaning)","Noun phrase","Semantic field"]},
-      {text: `The heads are the heads of snowmen, with the features painted on by a child. With a red felt pen, to make them look like real people. The heads are zeroes.`, techniques:["Metaphor","Juxtaposition","Graphology"]},
-      {text: `We lived, as usual, by ignoring. Like today’s newspapers. It was settled in the cupboards, it was in the way we took our coffee, it was in the skin of our hands. Waste not want not. I am not being wasted. Why do I want?`, techniques:["Anaphora","Aphorism","Pragmatics (implied meaning)"]},
-      {text: `Tell, rather than write, because I have nothing to write with and writing is in any case forbidden.`, techniques:["Direct Address","Pragmatics (implied meaning)","Verb phrase"]},
-      {text: `Blessed are the meek. She didn’t go on to say anything about inheriting the earth.`, techniques:["Aphorism","Irony","Juxtaposition"]},
-      {text: `Under His Eye.`, techniques:["Graphology","Direct Address","Pragmatics (implied meaning)"]},
-      {text: `I hunger to commit the act of touch.`, techniques:["Direct Address","Pragmatics (implied meaning)","Verb phrase"]},
-      {text: `My self is a thing I must now compose, as one composes a speech. What I must present is a made thing, not something born.`, techniques:["Metaphor","Noun phrase","Premodifying adj."]},
-      {text: `I move my foot in the bed, back and forth, before and after.`, techniques:["Repetition","Verb phrase","Asyndetic list"]},
-      {text: `Moira was like an elevator with open sides. She made us dizzy. Already we were losing the taste for freedom, already we were finding these walls secure.`, techniques:["Simile","Repetition","Juxtaposition"]},
-      {text: `He was reachable, untouchable.`, techniques:["Oxymoron","Juxtaposition","Premodifying adj."]},
-      {text: `A rat in a maze is free to go anywhere, as long as it stays inside the maze.`, techniques:["Metaphor","Juxtaposition","Semantic field"]},
-      {text: `Nolite te bastardes carborundorum.`, techniques:["Direct Address","Idiom","Graphology"]},
-      {text: `We are two-legged wombs, that’s all: sacred vessels, ambulatory chalices.`, techniques:["Metaphor","Juxtaposition","Premodifying adj."]},
-      {text: `I am a generator, individual, edible.`, techniques:["Asyndetic list","Noun phrase","Premodifying adj."]},
-      {text: `Each month I watch for blood, fearfully, for when it comes it means failure.`, techniques:["Verb phrase","Semantic field","Pragmatics (implied meaning)"]},
-      {text: `I’m a cloud, congealed around a central object, the shape of a pear, which is hard and more real than I am and glows red within its translucent shell.`, techniques:["Metaphor","Imagery","Synaesthesia"]},
-      {text: `Give me children, or else I die. There are only women who are fruitful and women who are barren, that's the law.`, techniques:["Aphorism","Juxtaposition","Pragmatics (implied meaning)"]},
-      {text: `The small person inside me, who would like to say I am here, but has no voice.`, techniques:["Metaphor","Noun phrase","Pragmatics (implied meaning)"]},
-      {text: `Everything they taught at the Red Centre was true: I am a natural resource.`, techniques:["Aphorism","Metaphor","Semantic field"]},
-      {text: `I sink down into my body as into a swamp, fenland, where only I know the way. My body seems outdated.`, techniques:["Metaphor","Imagery","Premodifying adj."]},
-      {text: `To be a man, watched by women. It must be entirely strange. To have them looking at him all the time, as if he’s a fountain, a trickler.`, techniques:["Juxtaposition","Simile","Semantic field"]},
-      {text: `The seed of the fruit, the promise of the future. It’s not the husband’s, it’s the state’s.`, techniques:["Metaphor","Juxtaposition","Semantic field"]}
-    ]
-  };
+/* ============================================================
+   SENTENCE STRUCTURE CLASSIFIER
+   ============================================================ */
+function classifyStructure(text) {
+  const t = text.trim();
 
-  /* ====== State & DOM refs ====== */
-  let currentMode = 'random';
-  let currentPool = MODE_POOLS.random;
-  let current = null;
-
-  let totalScore = 0;
-  let roundsPlayed = 0;
-  let questionsLeft = 0;
-
-  let timerId = null;
-  let timeLeft = 0;
-  let roundActive = false;
-  let isRevision = false;
-
-  const sentenceEl = document.getElementById('sentence');
-  const feedbackEl = document.getElementById('feedback');
-  const startBtn = document.getElementById('startBtn');
-  const checkBtn = document.getElementById('checkBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const timerEl = document.getElementById('timer');
-  const progressBar = document.getElementById('progressBar');
-  const scoreboardEl = document.getElementById('scoreboard');
-  const themeToggle = document.getElementById('themeToggle');
-  const themeLabel = document.getElementById('themeLabel');
-  const modeTabs = document.getElementById('modeTabs');
-  const metaText = document.getElementById('metaText');
-  const timerWrap = document.getElementById('timerWrap');
-  const examConfig = document.getElementById('examConfig');
-  const questionCountInput = document.getElementById('questionCount');
-  const timerMinutesInput = document.getElementById('timerMinutes');
-  const answerInput = document.getElementById('answerInput');
-  const customConfig = document.getElementById('customConfig');
-  const customSentenceInput = document.getElementById('customSentence');
-  const customTechniquesInput = document.getElementById('customTechniques');
-
-  /* ====== Theme handling (light/dark) ====== */
-  function applyTheme(theme){
-    document.body.classList.remove('theme-dark','theme-light');
-    document.body.classList.add(theme === 'light' ? 'theme-light' : 'theme-dark');
-    localStorage.setItem('trainerTheme', theme);
-    themeToggle.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
-    themeLabel.textContent = theme === 'light' ? 'Light' : 'Dark';
+  // Minor sentence / Fragmentation
+  if (!/[a-zA-Z]/.test(t) || !/[a-zA-Z]/.test(t.replace(/[^\w\s]/g, ""))) {
+    return ["Minor sentence", "Fragmentation"];
   }
-  const savedTheme = localStorage.getItem('trainerTheme') || 'dark';
-  applyTheme(savedTheme);
-  themeToggle.addEventListener('click', () => {
-    const newTheme = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
-    applyTheme(newTheme);
+  if (!/[a-zA-Z]/.test(t.split(" ").find(w => /[a-zA-Z]/.test(w)))) {
+    return ["Minor sentence", "Fragmentation"];
+  }
+  if (!/[a-zA-Z]/.test(t) || !/[a-z]/.test(t)) {
+    return ["Minor sentence", "Fragmentation"];
+  }
+  if (!/[a-z]/.test(t.replace(/[^a-z]/gi, ""))) {
+    return ["Minor sentence", "Fragmentation"];
+  }
+
+  // Check for verbs (very rough)
+  const hasVerb = /\b(am|is|are|was|were|be|being|been|have|has|had|do|does|did|[a-z]+ing|[a-z]+ed)\b/i.test(t);
+  if (!hasVerb) return ["Minor sentence", "Fragmentation"];
+
+  // Count clauses
+  const subordinators = /\b(although|because|since|when|while|after|before|if|unless|that|which|who|whom|whose|where|whereas)\b/i;
+  const coordinators = /\b(and|but|or|nor|for|yet|so)\b/i;
+
+  const hasSub = subordinators.test(t);
+  const hasCoord = coordinators.test(t);
+
+  if (hasSub && hasCoord) return ["Compound–complex sentence"];
+  if (hasSub) return ["Complex sentence"];
+  if (hasCoord) return ["Compound sentence"];
+  return ["Simple sentence"];
+}
+
+/* ============================================================
+   MODE POOLS WITH STRUCTURE TAGS ADDED
+   ============================================================ */
+function addStructuresToPool(pool) {
+  return pool.map(item => {
+    const structures = classifyStructure(item.text);
+    return {
+      text: item.text,
+      techniques: [...item.techniques, ...structures]
+    };
   });
+}
 
-  /* ====== Helpers ====== */
-  function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-  function formatTime(s){ return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
+const MODE_POOLS = {
+  random: addStructuresToPool([
+    {text:"He eats, sleeps, breathes and dreams about the game.", techniques:["Asyndetic list"]},
+    {text:"We need bread and milk and eggs and flour for the shop.", techniques:["Syndetic list"]},
+    {text:"I'll be there tomorrow; you'll see me then.", techniques:["Person deixis","Temporal deixis"]},
+    {text:"This book on the table belongs to her.", techniques:["Proximal deixis","Noun phrase"]},
+    {text:"The poster used bold font and wide spacing to grab attention.", techniques:["Graphology","Lexis"]},
+    {text:"Softly the sea sighed and the shore answered with a hush.", techniques:["Sibilant alliteration 's'","Personification"]},
+    {text:"They called the app 'Moodify' and the name caught on quickly.", techniques:["Neologism","Lexis"]},
+    {text:"The cat moved like a small king, proud and slow.", techniques:["Zoomorphism","Anthropomorphism"]},
+    {text:"She said 'fast and furious' to join two strong ideas.", techniques:["Hendiadys","Lexis"]},
+    {text:"The kettle hissed until the whistle broke the quiet morning.", techniques:["Lexical onomatopoeia","Phonology"]},
+    {text:"They called his dismissal 'a change in staffing' — a gentle euphemism.", techniques:["Euphemism","Pragmatics (implied meaning)"]},
+    {text:"He was labelled 'a troublemaker' — a harsh dysphemism that stuck.", techniques:["Dysphemism","Pragmatics (implied meaning)"]},
+    {text:"'If it ain't broke, don't fix it' — an old aphorism people repeat.", techniques:["Aphorism","Lexis"]},
+    {text:"She told him to 'break a leg' before the show — a common idiom.", techniques:["Idiom","Direct Address"]},
+    {text:"The advert promised the best, the brightest, the boldest.", techniques:["Superlative","Triplet"]},
+    {text:"She used words like weapons: precise, pointed, sharp.", techniques:["Premodifying adj.","Alliteration (general)"]},
+    {text:"The bell rang once and the town fell silent.", techniques:["Lexical onomatopoeia","Pathetic fallacy"]},
+    {text:"The old house groaned as if remembering other lives.", techniques:["Personification","Zoomorphism"]},
+    {text:"The slogan used stress in speech: 'Buy now!'", techniques:["Prosodic stress","Graphology"]}
+  ]),
 
-  function normalizeLabel(label){
-    return (label || '')
-      .toLowerCase()
-      .replace(/[^a-z0-9\s']/g,'')
-      .trim();
-  }
+  handmaids: addStructuresToPool([
+    {text:`A chair, a table, a lamp. Above, on the white ceiling, a relief ornament...`, techniques:["Asyndetic list","Imagery","Simile"]},
+    {text:`We produce our passes, from the pockets of our red cloaks...`, techniques:["Verb phrase","Graphology","Simile"]},
+    {text:`The night is mine, my own time, to do with as I will...`, techniques:["Repetition","Anaphora","Direct Address"]},
+    {text:`Books and books and books, right out in plain view...`, techniques:["Repetition","Asyndetic list","Premodifying adj."]},
+    {text:`There is more than one kind of freedom, said Aunt Lydia...`, techniques:["Direct Address","Aphorism","Juxtaposition"]},
+    {text:`Thinking can hurt your chances, and I intend to last...`, techniques:["Pragmatics (implied meaning)","Noun phrase","Semantic field"]},
+    {text:`The heads are the heads of snowmen...`, techniques:["Metaphor","Juxtaposition","Graphology"]},
+    {text:`We lived, as usual, by ignoring...`, techniques:["Anaphora","Aphorism","Pragmatics (implied meaning)"]},
+    {text:`Tell, rather than write...`, techniques:["Direct Address","Pragmatics (implied meaning)","Verb phrase"]},
+    {text:`Blessed are the meek...`, techniques:["Aphorism","Irony","Juxtaposition"]},
+    {text:`Under His Eye.`, techniques:["Graphology","Direct Address","Pragmatics (implied meaning)"]},
+    {text:`I hunger to commit the act of touch.`, techniques:["Direct Address","Pragmatics (implied meaning)","Verb phrase"]},
+    {text:`My self is a thing I must now compose...`, techniques:["Metaphor","Noun phrase","Premodifying adj."]},
+    {text:`I move my foot in the bed...`, techniques:["Repetition","Verb phrase","Asyndetic list"]},
+    {text:`Moira was like an elevator...`, techniques:["Simile","Repetition","Juxtaposition"]},
+    {text:`He was reachable, untouchable.`, techniques:["Oxymoron","Juxtaposition","Premodifying adj."]},
+    {text:`A rat in a maze is free to go anywhere...`, techniques:["Metaphor","Juxtaposition","Semantic field"]},
+    {text:`Nolite te bastardes carborundorum.`, techniques:["Direct Address","Idiom","Graphology"]},
+    {text:`We are two-legged wombs...`, techniques:["Metaphor","Juxtaposition","Premodifying adj."]},
+    {text:`I am a generator, individual, edible.`, techniques:["Asyndetic list","Noun phrase","Premodifying adj."]},
+    {text:`Each month I watch for blood...`, techniques:["Verb phrase","Semantic field","Pragmatics (implied meaning)"]},
+    {text:`I’m a cloud, congealed around a central object...`, techniques:["Metaphor","Imagery","Synaesthesia"]},
+    {text:`Give me children, or else I die...`, techniques:["Aphorism","Juxtaposition","Pragmatics (implied meaning)"]},
+    {text:`The small person inside me...`, techniques:["Metaphor","Noun phrase","Pragmatics (implied meaning)"]},
+    {text:`Everything they taught at the Red Centre...`, techniques:["Aphorism","Metaphor","Semantic field"]},
+    {text:`I sink down into my body...`, techniques:["Metaphor","Imagery","Premodifying adj."]},
+    {text:`To be a man, watched by women...`, techniques:["Juxtaposition","Simile","Semantic field"]},
+    {text:`The seed of the fruit...`, techniques:["Metaphor","Juxtaposition","Semantic field"]}
+  ])
+};
 
-  function parseUserTechniques(raw){
-    if(!raw) return [];
-    return raw
-      .split(',')
-      .map(t => normalizeLabel(t))
-      .filter(t => t.length > 0);
-  }
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentMode = "random";
+let currentPool = MODE_POOLS.random;
+let current = null;
 
-  function flexibleMatch(userTag, correctTag){
-    if(!userTag || !correctTag) return false;
-    if(userTag === correctTag) return true;
-    if(userTag.includes(correctTag) || correctTag.includes(userTag)) return true;
-    const userWords = userTag.split(/\s+/);
-    const correctWords = correctTag.split(/\s+/);
-    return userWords.some(w => w && correctTag.includes(w)) ||
-           correctWords.some(w => w && userTag.includes(w));
-  }
+let totalScore = 0;
+let roundsPlayed = 0;
+let questionsLeft = 0;
 
-  /* ====== Sentence loading ====== */
-  function loadSentence(){
-    feedbackEl.innerHTML = '';
-    answerInput.value = '';
-    if(currentMode === 'custom'){
-      const text = customSentenceInput.value.trim();
-      const techsRaw = customTechniquesInput.value.trim();
-      if(!text || !techsRaw){
-        sentenceEl.textContent = "Add a custom sentence and its techniques, then press Start.";
-        return;
-      }
-      const techs = techsRaw.split(',').map(t => t.trim()).filter(Boolean);
-      current = { text, techniques: techs };
-      sentenceEl.textContent = current.text;
-    } else {
-      current = pickRandom(currentPool);
-      sentenceEl.textContent = current.text;
-    }
-  }
+let timerId = null;
+let timeLeft = 0;
+let roundActive = false;
+let isRevision = false;
 
-  /* ====== Scoring & feedback ====== */
-  function showFeedback(correctCount, wrongList, missedList){
-    feedbackEl.innerHTML = `
-      <div><strong style="color:var(--good)">Correct techniques you named:</strong> ${correctCount}</div>
-      <div><strong style="color:var(--bad)">Incorrect / extra:</strong> ${wrongList.length ? wrongList.join(", ") : "None"}</div>
-      <div class="muted">Missed techniques (author tags): ${missedList.length ? missedList.join(", ") : "None"}</div>
-      <div class="muted">All techniques in this sentence: ${current.techniques.join(", ")}</div>
-    `;
-  }
+/* ============================================================
+   DOM REFERENCES
+   ============================================================ */
+const sentenceEl = document.getElementById("sentence");
+const feedbackEl = document.getElementById("feedback");
+const startBtn = document.getElementById("startBtn");
+const checkBtn = document.getElementById("checkBtn");
+const nextBtn = document.getElementById("nextBtn");
+const timerEl = document.getElementById("timer");
+const progressBar = document.getElementById("progressBar");
+const scoreboardEl = document.getElementById("scoreboard");
+const themeToggle = document.getElementById("themeToggle");
+const themeLabel = document.getElementById("themeLabel");
+const modeTabs = document.getElementById("modeTabs");
+const metaText = document.getElementById("metaText");
+const timerWrap = document.getElementById("timerWrap");
+const examConfig = document.getElementById("examConfig");
+const questionCountInput = document.getElementById("questionCount");
+const timerMinutesInput = document.getElementById("timerMinutes");
+const answerInput = document.getElementById("answerInput");
+const customConfig = document.getElementById("customConfig");
+const customSentenceInput = document.getElementById("customSentence");
+const customTechniquesInput = document.getElementById("customTechniques");
 
-  function checkAnswers(){
-    if(!current || !roundActive) return;
-    const userTagsRaw = parseUserTechniques(answerInput.value);
-    const correctTagsNorm = current.techniques.map(t => normalizeLabel(t));
+/* ============================================================
+   THEME HANDLING
+   ============================================================ */
+function applyTheme(theme){
+  document.body.classList.remove("theme-dark","theme-light");
+  document.body.classList.add(theme === "light" ? "theme-light" : "theme-dark");
+  localStorage.setItem("trainerTheme", theme);
+  themeToggle.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+  themeLabel.textContent = theme === "light" ? "Light" : "Dark";
+}
+applyTheme(localStorage.getItem("trainerTheme") || "dark");
 
-    let correctCount = 0;
-    let wrongList = [];
+themeToggle.addEventListener("click", () => {
+  const newTheme = document.body.classList.contains("theme-dark") ? "light" : "dark";
+  applyTheme(newTheme);
+});
 
-    userTagsRaw.forEach(userTag => {
-      const matched = correctTagsNorm.some(ct => flexibleMatch(userTag, ct));
-      if(matched){
-        correctCount++;
-      } else {
-        wrongList.push(userTag);
-      }
-    });
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function formatTime(s){ return String(Math.floor(s/60)).padStart(2,"0") + ":" + String(s%60).padStart(2,"0"); }
 
-    const missedList = current.techniques.filter(t => {
-      const norm = normalizeLabel(t);
-      const matched = userTagsRaw.some(ut => flexibleMatch(ut, norm));
-      return !matched;
-    });
+function normalizeLabel(label){
+  return (label || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s']/g,"")
+    .trim();
+}
 
-    totalScore += correctCount;
-    roundsPlayed++;
-    if(!isRevision){
-      questionsLeft = Math.max(0, questionsLeft - 1);
-    }
-    showFeedback(correctCount, wrongList, missedList);
-    updateScoreboard();
+function parseUserTechniques(raw){
+  if(!raw) return [];
+  return raw
+    .split(",")
+    .map(t => normalizeLabel(t))
+    .filter(t => t.length > 0);
+}
 
-    if(!isRevision && questionsLeft <= 0){
-      endRound("Round finished — you’ve answered all questions.");
-    }
-  }
+function flexibleMatch(userTag, correctTag){
+  if(!userTag || !correctTag) return false;
+  if(userTag === correctTag) return true;
+  if(userTag.includes(correctTag) || correctTag.includes(userTag)) return true;
 
-  function updateScoreboard(){
-    scoreboardEl.textContent = `Rounds: ${roundsPlayed} • Total score: ${totalScore} • Questions left: ${isRevision ? "∞" : questionsLeft}`;
-  }
+  const userWords = userTag.split(/\s+/);
+  const correctWords = correctTag.split(/\s+/);
 
-  /* ====== Timer functions ====== */
-  function startTimer(totalSeconds){
-    if(isRevision){
-      timerWrap.classList.add('hidden');
+  return userWords.some(w => w && correctTag.includes(w)) ||
+         correctWords.some(w => w && userTag.includes(w));
+}
+
+/* ============================================================
+   SENTENCE LOADING
+   ============================================================ */
+function loadSentence(){
+  feedbackEl.innerHTML = "";
+  answerInput.value = "";
+
+  if(currentMode === "custom"){
+    const text = customSentenceInput.value.trim();
+    const techsRaw = customTechniquesInput.value.trim();
+    if(!text || !techsRaw){
+      sentenceEl.textContent = "Add a custom sentence and its techniques, then press Start.";
       return;
     }
-    timerWrap.classList.remove('hidden');
-    timeLeft = totalSeconds;
-    updateTimerUI(totalSeconds);
-    if(timerId) clearInterval(timerId);
-    timerId = setInterval(() => {
-      timeLeft--;
-      updateTimerUI(totalSeconds);
-      if(timeLeft <= 0){
-        clearInterval(timerId);
-        timerId = null;
-        checkAnswers();
-        endRound("Time is up — round ended.");
-      }
-    }, 1000);
+    const techs = techsRaw.split(",").map(t => t.trim()).filter(Boolean);
+    const structures = classifyStructure(text);
+    current = { text, techniques: [...techs, ...structures] };
+    sentenceEl.textContent = current.text;
+  } else {
+    current = pickRandom(currentPool);
+    sentenceEl.textContent = current.text;
+  }
+}
+
+/* ============================================================
+   SCORING
+   ============================================================ */
+function showFeedback(correctCount, wrongList, missedList){
+  feedbackEl.innerHTML = `
+    <div><strong style="color:var(--good)">Correct techniques you named:</strong> ${correctCount}</div>
+    <div><strong style="color:var(--bad)">Incorrect / extra:</strong> ${wrongList.length ? wrongList.join(", ") : "None"}</div>
+    <div class="muted">Missed techniques (author tags): ${missedList.length ? missedList.join(", ") : "None"}</div>
+    <div class="muted">All techniques in this sentence: ${current.techniques.join(", ")}</div>
+  `;
+}
+
+function checkAnswers(){
+  if(!current || !roundActive) return;
+
+  const userTagsRaw = parseUserTechniques(answerInput.value);
+  const correctTagsNorm = current.techniques.map(t => normalizeLabel(t));
+
+  let correctCount = 0;
+  let wrongList = [];
+
+  userTagsRaw.forEach(userTag => {
+    const matched = correctTagsNorm.some(ct => flexibleMatch(userTag, ct));
+    if(matched){
+      correctCount++;
+    } else {
+      wrongList.push(userTag);
+    }
+  });
+
+  const missedList = current.techniques.filter(t => {
+    const norm = normalizeLabel(t);
+    const matched = userTagsRaw.some(ut => flexibleMatch(ut, norm));
+    return !matched;
+  });
+
+  totalScore += correctCount;
+  roundsPlayed++;
+  if(!isRevision){
+    questionsLeft = Math.max(0, questionsLeft - 1);
   }
 
-  function stopTimer(){
-    if(timerId){
+  showFeedback(correctCount, wrongList, missedList);
+  updateScoreboard();
+
+  if(!isRevision && questionsLeft <= 0){
+    endRound("Round finished — you’ve answered all questions.");
+  }
+}
+
+function updateScoreboard(){
+  scoreboardEl.textContent = `Rounds: ${roundsPlayed} • Total score: ${totalScore} • Questions left: ${isRevision ? "∞" : questionsLeft}`;
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+function startTimer(totalSeconds){
+  if(isRevision){
+    timerWrap.classList.add("hidden");
+    return;
+  }
+  timerWrap.classList.remove("hidden");
+
+  timeLeft = totalSeconds;
+  updateTimerUI(totalSeconds);
+
+  if(timerId) clearInterval(timerId);
+  timerId = setInterval(() => {
+    timeLeft--;
+    updateTimerUI(totalSeconds);
+
+    if(timeLeft <= 0){
       clearInterval(timerId);
       timerId = null;
-    }
-  }
-
-  function updateTimerUI(totalSeconds){
-    timerEl.textContent = formatTime(Math.max(0, timeLeft));
-    const pct = totalSeconds > 0 ? Math.max(0, Math.min(100, Math.round((timeLeft/totalSeconds)*100))) : 0;
-    progressBar.style.width = pct + '%';
-    timerEl.style.color = timeLeft <= 15
-      ? 'var(--bad)'
-      : (document.body.classList.contains('theme-light') ? 'var(--accent-dark)' : 'var(--accent2)');
-  }
-
-  /* ====== Round control ====== */
-  function startRound(){
-    feedbackEl.innerHTML = '';
-    if(currentMode === 'custom'){
-      const text = customSentenceInput.value.trim();
-      const techs = customTechniquesInput.value.trim();
-      if(!text || !techs){
-        feedbackEl.innerHTML = `<span style="color:var(--bad)">Add a custom sentence and its techniques before starting this mode.</span>`;
-        return;
-      }
-    }
-
-    isRevision = (currentMode === 'revision');
-    roundActive = true;
-
-    if(isRevision){
-      questionsLeft = Infinity;
-      metaText.innerHTML = "Revision mode — no timer, no limit. Type techniques and check whenever you like.";
-      timerWrap.classList.add('hidden');
-      examConfig.classList.add('hidden');
-    } else {
-      examConfig.classList.remove('hidden');
-      const qCount = Math.max(1, Math.min(50, parseInt(questionCountInput.value || '10', 10)));
-      const mins = Math.max(1, Math.min(60, parseInt(timerMinutesInput.value || '10', 10)));
-      questionCountInput.value = qCount;
-      timerMinutesInput.value = mins;
-      questionsLeft = qCount;
-      const totalSeconds = mins * 60;
-      metaText.innerHTML = `Exam mode — ${qCount} questions, ${mins} minute(s). Type techniques, then check.`;
-      startTimer(totalSeconds);
-    }
-
-    loadSentence();
-    updateScoreboard();
-  }
-
-  function endRound(message){
-    roundActive = false;
-    stopTimer();
-    feedbackEl.innerHTML += `<div class="muted" style="margin-top:6px;">${message}</div>`;
-  }
-
-  function nextSentence(){
-    if(!roundActive){
-      loadSentence();
-      return;
-    }
-    if(!isRevision && questionsLeft <= 0){
-      feedbackEl.innerHTML += `<div class="muted" style="margin-top:6px;">Round is over — press Start to begin a new one.</div>`;
-      return;
-    }
-    loadSentence();
-  }
-
-  /* ====== Mode switching ====== */
-  function setMode(mode){
-    currentMode = mode;
-    if(mode === 'random'){
-      currentPool = MODE_POOLS.random;
-      isRevision = false;
-      metaText.innerHTML = "Random mode — pick how many questions and how long you want, then start the round.";
-      customConfig.classList.add('hidden');
-      examConfig.classList.remove('hidden');
-      timerWrap.classList.remove('hidden');
-    } else if(mode === 'handmaids'){
-      currentPool = MODE_POOLS.handmaids;
-      isRevision = false;
-      metaText.innerHTML = "Handmaid's Tale mode — exam style. Choose questions and time, then start.";
-      customConfig.classList.add('hidden');
-      examConfig.classList.remove('hidden');
-      timerWrap.classList.remove('hidden');
-    } else if(mode === 'custom'){
-      currentPool = []; // we build from inputs
-      isRevision = false;
-      metaText.innerHTML = "Custom mode — enter one sentence and its techniques, then start the round.";
-      customConfig.classList.remove('hidden');
-      examConfig.classList.remove('hidden');
-      timerWrap.classList.remove('hidden');
-    } else if(mode === 'revision'){
-      currentPool = MODE_POOLS.random;
-      isRevision = true;
-      metaText.innerHTML = "Revision mode — no timer, no question limit. Just practise and check your answers.";
-      customConfig.classList.add('hidden');
-      examConfig.classList.add('hidden');
-      timerWrap.classList.add('hidden');
-    }
-
-    stopTimer();
-    roundActive = false;
-    feedbackEl.innerHTML = '';
-    answerInput.value = '';
-    questionsLeft = isRevision ? Infinity : 0;
-    loadSentence();
-    updateScoreboard();
-  }
-
-  modeTabs.addEventListener('click', (e) => {
-    const btn = e.target.closest('.mode-tab');
-    if(!btn) return;
-    Array.from(modeTabs.querySelectorAll('.mode-tab')).forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const mode = btn.dataset.mode;
-    setMode(mode);
-  });
-
-  /* ====== Events ====== */
-  startBtn.addEventListener('click', () => {
-    startRound();
-  });
-
-  checkBtn.addEventListener('click', () => {
-    checkAnswers();
-  });
-
-  nextBtn.addEventListener('click', () => {
-    nextSentence();
-  });
-
-  answerInput.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter'){
-      e.preventDefault();
       checkAnswers();
+      endRound("Time is up — round ended.");
     }
-  });
+  }, 1000);
+}
 
-  /* ====== Init ====== */
-  setMode('random');
-  updateScoreboard();
-</script>
-</body>
-</html>
+function stopTimer(){
+  if(timerId){
+    clearInterval(timerId);
+    timerId = null;
+  }
+}
 
+function updateTimerUI(totalSeconds){
+  timerEl.textContent = formatTime(Math.max(0, timeLeft));
+  const pct = totalSeconds > 0 ? Math.max(0, Math.min(100, Math.round((timeLeft/totalSeconds)*100))) : 0;
+  progressBar.style.width = pct + "%";
+
+  timerEl.style.color = timeLeft <= 15
+    ? "var
