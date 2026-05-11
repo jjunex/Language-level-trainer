@@ -62,12 +62,36 @@
   .subtitle{ font-size:0.95rem; margin-top:4px; color:var(--muted-light); }
   body.theme-light .subtitle{ color:var(--muted-dark); }
 
-  .top-left{ display:flex; gap:10px; align-items:center; }
-  .mode-select{
-    padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,0.04);
-    background:transparent; color:var(--muted-light); font-weight:700; cursor:pointer;
+  .top-left{ display:flex; flex-direction:column; gap:6px; }
+
+  .mode-tabs{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
   }
-  body.theme-light .mode-select{ border:1px solid rgba(11,18,32,0.06); color:var(--muted-dark); background:#fff; }
+  .mode-tab{
+    padding:7px 12px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.06);
+    background:transparent;
+    color:var(--muted-light);
+    font-weight:700;
+    font-size:0.9rem;
+    cursor:pointer;
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease, transform .1s ease;
+  }
+  .mode-tab.active{
+    background: linear-gradient(90deg,var(--accent),var(--accent2));
+    color:#012;
+    box-shadow:0 8px 20px rgba(12,18,40,0.25);
+    border:0;
+    transform: translateY(-1px);
+  }
+  body.theme-light .mode-tab{
+    border:1px solid rgba(11,18,32,0.06);
+    color:var(--muted-dark);
+    background:#fff;
+  }
 
   .top-right{ margin-left:auto; display:flex; gap:10px; align-items:center; }
 
@@ -91,27 +115,37 @@
     line-height:1.45;
     border:1px solid rgba(255,255,255,0.03);
     transition: background .25s ease, color .25s ease;
+    min-height:60px;
   }
   body.theme-light .sentence{ background: #fbfdff; border:1px solid rgba(11,18,32,0.04); }
 
-  .techniques{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
-  .tech{
-    padding:7px 10px;
-    border-radius:8px;
-    border:1px solid rgba(255,255,255,0.04);
-    background:transparent;
-    color:var(--muted-light);
-    cursor:pointer;
-    font-weight:700;
-    font-size:0.92rem;
-    transition: transform .12s ease, background .12s ease, color .12s ease, box-shadow .12s ease;
-    opacity:0.9;
+  .answer-wrap{
+    margin-top:12px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
   }
-  body.theme-light .tech{ color:var(--muted-dark); border:1px solid rgba(11,18,32,0.04); }
-  .tech:hover{ transform: translateY(-3px); }
-  .tech.selected{ background: linear-gradient(90deg,var(--accent),var(--accent2)); color:#012; border:0; box-shadow:0 8px 20px rgba(12,18,40,0.25); }
+  .answer-label{
+    font-size:0.9rem;
+    color:var(--muted-light);
+  }
+  body.theme-light .answer-label{ color:var(--muted-dark); }
 
-  .controls{ display:flex; gap:12px; align-items:center; margin-top:14px; }
+  .answer-input{
+    width:100%;
+    padding:9px 10px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.06);
+    background:rgba(0,0,0,0.05);
+    color:inherit;
+    font-size:0.95rem;
+  }
+  body.theme-light .answer-input{
+    background:#fff;
+    border:1px solid rgba(11,18,32,0.08);
+  }
+
+  .controls{ display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
 
   .btn{
     padding:10px 14px; border-radius:12px; border:0; cursor:pointer; font-weight:800;
@@ -119,14 +153,12 @@
     transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
   }
 
-  /* Start button: distinct orange gradient */
   .btn.start{
     background: linear-gradient(90deg,#ff7a18,#ffb347);
     color:#fff;
   }
   body.theme-light .btn.start{ background: linear-gradient(90deg,#ff8a2b,#ffc87c); color:#fff; }
 
-  /* Check button: prominent green */
   .btn.check{
     background: linear-gradient(90deg,#16a34a,#10b981);
     color:#fff;
@@ -135,7 +167,6 @@
     border-radius:14px;
   }
 
-  /* New sentence button: prominent blue */
   .btn.next{
     background: linear-gradient(90deg,#2563eb,#06b6d4);
     color:#fff;
@@ -144,9 +175,6 @@
     border-radius:14px;
   }
 
-  .techniques { margin-bottom:6px; }
-  .tech { opacity:0.85; font-size:0.92rem; padding:6px 9px; }
-
   .timer-wrap{ margin-left:auto; display:flex; gap:10px; align-items:center; }
   .timer{ font-weight:800; padding:8px 12px; border-radius:10px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); color:var(--accent2); }
   body.theme-light .timer{ background: #fff; border:1px solid rgba(11,18,32,0.04); color:var(--accent-dark); }
@@ -154,10 +182,69 @@
   .progress{ height:8px; background: rgba(255,255,255,0.03); border-radius:999px; overflow:hidden; width:220px; }
   .progress > i{ display:block; height:100%; background: linear-gradient(90deg,var(--accent),var(--accent2)); width:0%; transition: width .3s linear; }
 
+  .small-inputs{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+    font-size:0.9rem;
+    color:var(--muted-light);
+  }
+  body.theme-light .small-inputs{ color:var(--muted-dark); }
+
+  .small-inputs input{
+    width:70px;
+    padding:5px 7px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.06);
+    background:rgba(0,0,0,0.05);
+    color:inherit;
+    font-size:0.9rem;
+  }
+  body.theme-light .small-inputs input{
+    background:#fff;
+    border:1px solid rgba(11,18,32,0.08);
+  }
+
   #feedback{ margin-top:12px; font-size:0.98rem; color:var(--muted-light); }
   body.theme-light #feedback{ color:var(--muted-dark); }
   .scoreboard{ margin-top:10px; color:var(--muted-light); font-weight:700; }
   body.theme-light .scoreboard{ color:var(--muted-dark); }
+
+  .hidden{ display:none !important; }
+
+  .custom-config{
+    margin-top:10px;
+    padding:10px;
+    border-radius:10px;
+    border:1px dashed rgba(255,255,255,0.08);
+    font-size:0.9rem;
+  }
+  body.theme-light .custom-config{
+    border-color:rgba(11,18,32,0.12);
+    background:#f9fbff;
+  }
+  .custom-config textarea,
+  .custom-config input{
+    width:100%;
+    margin-top:4px;
+    margin-bottom:8px;
+    padding:7px 8px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.06);
+    background:rgba(0,0,0,0.05);
+    color:inherit;
+    font-size:0.9rem;
+  }
+  body.theme-light .custom-config textarea,
+  body.theme-light .custom-config input{
+    background:#fff;
+    border:1px solid rgba(11,18,32,0.08);
+  }
+  .custom-config label{
+    font-weight:600;
+    font-size:0.9rem;
+  }
 
   @media (max-width:640px){
     .controls{ flex-wrap:wrap; }
@@ -170,17 +257,13 @@
   <div class="wrap" role="main">
     <header>
       <div class="top-left">
-        <label for="modeSelect" style="font-weight:800;margin-right:6px">Mode</label>
-        <select id="modeSelect" class="mode-select" aria-label="Choose game mode">
-          <option value="random">Random</option>
-          <option value="handmaids">Handmaid's Tale</option>
-          <option value="duffy">Duffy poems</option>
-          <option value="paris">Paris anthology</option>
-        </select>
-      </div>
-
-      <div>
-        <h1 style="margin:0">Language Technique Trainer</h1>
+        <h1>Language Technique Trainer</h1>
+        <div class="mode-tabs" id="modeTabs" aria-label="Mode selection">
+          <button class="mode-tab active" data-mode="random">Random</button>
+          <button class="mode-tab" data-mode="handmaids">Handmaid's Tale</button>
+          <button class="mode-tab" data-mode="custom">Custom</button>
+          <button class="mode-tab" data-mode="revision">Revision</button>
+        </div>
       </div>
 
       <div class="top-right" aria-hidden="false">
@@ -191,26 +274,45 @@
     </header>
 
     <div class="card" role="region" aria-label="Trainer card">
-      <div class="meta">Start the round, then click any technique you spot in the sentence. You have <strong>2 minutes</strong> per question.</div>
+      <div class="meta" id="metaText">
+        Choose a mode, set how many questions and how long you want, then start the round. Type the techniques you spot (e.g. <em>metaphor, asyndetic list</em>).
+      </div>
 
-      <div class="sentence" id="sentence" aria-live="polite">Loading…</div>
+      <div class="sentence" id="sentence" aria-live="polite">Click a mode and press Start to begin.</div>
 
-      <div class="techniques" id="techniques" aria-label="Technique buttons"></div>
+      <div class="answer-wrap">
+        <div class="answer-label">Type all techniques you can see (comma‑separated):</div>
+        <input id="answerInput" class="answer-input" type="text" placeholder="e.g. metaphor, personification, asyndetic list" autocomplete="off" />
+      </div>
+
+      <div id="customConfig" class="custom-config hidden">
+        <div><strong>Custom mode setup</strong> — enter one sentence and its techniques before starting.</div>
+        <label for="customSentence">Custom sentence:</label>
+        <textarea id="customSentence" rows="3" placeholder="Type your sentence here..."></textarea>
+        <label for="customTechniques">Techniques for this sentence (comma‑separated):</label>
+        <input id="customTechniques" type="text" placeholder="e.g. metaphor, semantic field, direct address" />
+      </div>
 
       <div class="controls" role="toolbar" aria-label="Game controls">
-        <button id="startBtn" class="btn start" aria-label="Start round">Start</button>
-
+        <button id="startBtn" class="btn start" aria-label="Start round">Start round</button>
         <button id="checkBtn" class="btn check" aria-label="Check answers">Check</button>
-        <button id="nextBtn" class="btn next" aria-label="New sentence">New sentence</button>
+        <button id="nextBtn" class="btn next" aria-label="Next sentence">Next</button>
 
-        <div class="timer-wrap" aria-hidden="false">
+        <div class="small-inputs" id="examConfig">
+          <span>Questions:</span>
+          <input id="questionCount" type="number" min="1" max="50" value="10" />
+          <span>Timer (mins):</span>
+          <input id="timerMinutes" type="number" min="1" max="60" value="10" />
+        </div>
+
+        <div class="timer-wrap" id="timerWrap">
           <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
-          <div class="timer" id="timer" aria-live="polite">02:00</div>
+          <div class="timer" id="timer" aria-live="polite">10:00</div>
         </div>
       </div>
 
       <div id="feedback" role="status"></div>
-      <div class="scoreboard" id="scoreboard" aria-live="polite">Rounds: 0 • Total score: 0</div>
+      <div class="scoreboard" id="scoreboard" aria-live="polite">Rounds: 0 • Total score: 0 • Questions left: 0</div>
     </div>
   </div>
 
@@ -292,8 +394,6 @@
       {text:"The slogan used stress in speech: 'Buy now!'", techniques:["Prosodic stress","Graphology"]}
     ],
 
-    /* Handmaid's Tale mode: replaced with the user-provided lines (kept as practice sentences).
-       Each sentence is tagged with plausible techniques for spotting. */
     handmaids: [
       {text: `A chair, a table, a lamp. Above, on the white ceiling, a relief ornament in the shape of a wreath, and in the center of it a blank space, plastered over, like the place in a face where an eye has been taken out.`, techniques:["Asyndetic list","Imagery","Simile"]},
       {text: `We produce our passes, from the pockets of our red cloaks. They are inspected, feathered with the light of the sun, and returned. We walk on. The sidewalk is red brick. Here and there are patches of old snow, like dried spit.`, techniques:["Verb phrase","Graphology","Simile"]},
@@ -323,40 +423,24 @@
       {text: `I sink down into my body as into a swamp, fenland, where only I know the way. My body seems outdated.`, techniques:["Metaphor","Imagery","Premodifying adj."]},
       {text: `To be a man, watched by women. It must be entirely strange. To have them looking at him all the time, as if he’s a fountain, a trickler.`, techniques:["Juxtaposition","Simile","Semantic field"]},
       {text: `The seed of the fruit, the promise of the future. It’s not the husband’s, it’s the state’s.`, techniques:["Metaphor","Juxtaposition","Semantic field"]}
-    ],
-
-    duffy: [
-      {text:"She kept his letters in a box, each one a small, bright lie.", techniques:["Metaphor","Juxtaposition","Noun phrase"]},
-      {text:"The city hummed; she walked through it like a ghost.", techniques:["Personification","Simile","Phonology"]},
-      {text:"He said her name and the room filled with memory.", techniques:["Direct Address","Synaesthesia","Semantic field"]},
-      {text:"She stitched the past into the present, thread by careful thread.", techniques:["Metaphor","Verb phrase","Anaphora"]},
-      {text:"The mirror showed a face she almost recognised.", techniques:["Juxtaposition","Imagery","Pragmatics (implied meaning)"]},
-      {text:"She used small jokes to soften the sharp edges of truth.", techniques:["Euphemism","Premodifying adj.","Lexis"]},
-      {text:"The rain tapped like a slow, patient hand on the window.", techniques:["Lexical onomatopoeia","Simile","Personification"]}
-    ],
-
-    paris: [
-      {text:"The river carried lights like coins along its dark skin.", techniques:["Simile","Imagery","Semantic field"]},
-      {text:"Cafes spilled warmth onto the pavement; voices rose and fell.", techniques:["Personification","Sibilance (soft 's' sounds)","Graphology"]},
-      {text:"He watched the bridge, patient as a sentinel.", techniques:["Simile","Metaphor","Noun phrase"]},
-      {text:"The postcard said 'wish you were here' in a neat, small hand.", techniques:["Direct Address","Graphology","Pragmatics (implied meaning)"]},
-      {text:"Autumn leaves gathered like small, tired crowds on the quay.", techniques:["Simile","Personification","Semantic field"]},
-      {text:"She ordered coffee and the barista smiled, a practiced kindness.", techniques:["Premodifying adj.","Lexis","Pragmatics (implied meaning)"]}
     ]
   };
 
   /* ====== State & DOM refs ====== */
+  let currentMode = 'random';
   let currentPool = MODE_POOLS.random;
   let current = null;
-  let selected = new Set();
+
   let totalScore = 0;
   let roundsPlayed = 0;
+  let questionsLeft = 0;
+
   let timerId = null;
-  let timeLeft = 120;
-  let started = false;
+  let timeLeft = 0;
+  let roundActive = false;
+  let isRevision = false;
 
   const sentenceEl = document.getElementById('sentence');
-  const techniquesEl = document.getElementById('techniques');
   const feedbackEl = document.getElementById('feedback');
   const startBtn = document.getElementById('startBtn');
   const checkBtn = document.getElementById('checkBtn');
@@ -364,9 +448,18 @@
   const timerEl = document.getElementById('timer');
   const progressBar = document.getElementById('progressBar');
   const scoreboardEl = document.getElementById('scoreboard');
-  const modeSelect = document.getElementById('modeSelect');
   const themeToggle = document.getElementById('themeToggle');
   const themeLabel = document.getElementById('themeLabel');
+  const modeTabs = document.getElementById('modeTabs');
+  const metaText = document.getElementById('metaText');
+  const timerWrap = document.getElementById('timerWrap');
+  const examConfig = document.getElementById('examConfig');
+  const questionCountInput = document.getElementById('questionCount');
+  const timerMinutesInput = document.getElementById('timerMinutes');
+  const answerInput = document.getElementById('answerInput');
+  const customConfig = document.getElementById('customConfig');
+  const customSentenceInput = document.getElementById('customSentence');
+  const customTechniquesInput = document.getElementById('customTechniques');
 
   /* ====== Theme handling (light/dark) ====== */
   function applyTheme(theme){
@@ -387,135 +480,268 @@
   function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
   function formatTime(s){ return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
 
-  /* ====== Render technique buttons ====== */
-  function renderTechniques(){
-    techniquesEl.innerHTML = '';
-    QUIZLET_TERMS.forEach((label, idx) => {
-      const id = 'q' + idx;
-      const btn = document.createElement('button');
-      btn.className = 'tech';
-      btn.textContent = label;
-      btn.dataset.id = id;
-      btn.type = 'button';
-      btn.onclick = () => {
-        if(!started) return;
-        if(selected.has(id)){ selected.delete(id); btn.classList.remove('selected'); }
-        else { selected.add(id); btn.classList.add('selected'); }
-      };
-      techniquesEl.appendChild(btn);
-    });
+  function normalizeLabel(label){
+    return (label || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s']/g,'')
+      .trim();
   }
 
-  /* ====== Load sentence from current pool ====== */
+  function parseUserTechniques(raw){
+    if(!raw) return [];
+    return raw
+      .split(',')
+      .map(t => normalizeLabel(t))
+      .filter(t => t.length > 0);
+  }
+
+  function flexibleMatch(userTag, correctTag){
+    if(!userTag || !correctTag) return false;
+    if(userTag === correctTag) return true;
+    if(userTag.includes(correctTag) || correctTag.includes(userTag)) return true;
+    const userWords = userTag.split(/\s+/);
+    const correctWords = correctTag.split(/\s+/);
+    return userWords.some(w => w && correctTag.includes(w)) ||
+           correctWords.some(w => w && userTag.includes(w));
+  }
+
+  /* ====== Sentence loading ====== */
   function loadSentence(){
-    selected.clear();
     feedbackEl.innerHTML = '';
-    stopTimer();
-    started = false;
-    timeLeft = 120;
-    updateTimerUI();
-    current = pickRandom(currentPool);
-    sentenceEl.textContent = current.text;
-    renderTechniques();
+    answerInput.value = '';
+    if(currentMode === 'custom'){
+      const text = customSentenceInput.value.trim();
+      const techsRaw = customTechniquesInput.value.trim();
+      if(!text || !techsRaw){
+        sentenceEl.textContent = "Add a custom sentence and its techniques, then press Start.";
+        return;
+      }
+      const techs = techsRaw.split(',').map(t => t.trim()).filter(Boolean);
+      current = { text, techniques: techs };
+      sentenceEl.textContent = current.text;
+    } else {
+      current = pickRandom(currentPool);
+      sentenceEl.textContent = current.text;
+    }
   }
 
   /* ====== Scoring & feedback ====== */
-  function normalizeLabel(label){
-    return label.toLowerCase().replace(/[^a-z0-9\s']/g,'').trim();
-  }
-
-  function showFeedback(score, wrong, missed){
+  function showFeedback(correctCount, wrongList, missedList){
     feedbackEl.innerHTML = `
-      <div><strong style="color:var(--good)">Correct picked:</strong> ${score}</div>
-      <div><strong style="color:var(--bad)">Wrong picks:</strong> ${wrong.length ? wrong.join(", ") : "None"}</div>
-      <div class="muted">Missed techniques (author tags): ${missed.length ? missed.join(", ") : "None"}</div>
+      <div><strong style="color:var(--good)">Correct techniques you named:</strong> ${correctCount}</div>
+      <div><strong style="color:var(--bad)">Incorrect / extra:</strong> ${wrongList.length ? wrongList.join(", ") : "None"}</div>
+      <div class="muted">Missed techniques (author tags): ${missedList.length ? missedList.join(", ") : "None"}</div>
       <div class="muted">All techniques in this sentence: ${current.techniques.join(", ")}</div>
     `;
   }
 
   function checkAnswers(){
-    if(!current) return;
-    const correctTags = current.techniques.map(t => normalizeLabel(t));
-    let score = 0, wrong = [];
-    selected.forEach(id => {
-      const label = normalizeLabel(QUIZLET_TERMS[parseInt(id.slice(1))] || '');
-      const matched = correctTags.some(tag => {
-        if (!tag) return false;
-        if (label.includes(tag) || tag.includes(label)) return true;
-        const tagWords = tag.split(/\s+/);
-        return tagWords.some(w => w && label.includes(w));
-      });
-      if(matched) score++;
-      else wrong.push(QUIZLET_TERMS[parseInt(id.slice(1))]);
+    if(!current || !roundActive) return;
+    const userTagsRaw = parseUserTechniques(answerInput.value);
+    const correctTagsNorm = current.techniques.map(t => normalizeLabel(t));
+
+    let correctCount = 0;
+    let wrongList = [];
+
+    userTagsRaw.forEach(userTag => {
+      const matched = correctTagsNorm.some(ct => flexibleMatch(userTag, ct));
+      if(matched){
+        correctCount++;
+      } else {
+        wrongList.push(userTag);
+      }
     });
-    const missed = current.techniques.filter(t => {
-      const tag = normalizeLabel(t);
-      const matchedBySelection = Array.from(selected).some(id => {
-        const label = normalizeLabel(QUIZLET_TERMS[parseInt(id.slice(1))] || '');
-        if (!label) return false;
-        if (label.includes(tag) || tag.includes(label)) return true;
-        const tagWords = tag.split(/\s+/);
-        return tagWords.some(w => w && label.includes(w));
-      });
-      return !matchedBySelection;
+
+    const missedList = current.techniques.filter(t => {
+      const norm = normalizeLabel(t);
+      const matched = userTagsRaw.some(ut => flexibleMatch(ut, norm));
+      return !matched;
     });
-    totalScore += score;
+
+    totalScore += correctCount;
     roundsPlayed++;
-    showFeedback(score, wrong, missed);
+    if(!isRevision){
+      questionsLeft = Math.max(0, questionsLeft - 1);
+    }
+    showFeedback(correctCount, wrongList, missedList);
     updateScoreboard();
-    stopTimer();
-    started = false;
+
+    if(!isRevision && questionsLeft <= 0){
+      endRound("Round finished — you’ve answered all questions.");
+    }
   }
 
-  function updateScoreboard(){ scoreboardEl.textContent = `Rounds: ${roundsPlayed} • Total score: ${totalScore}`; }
+  function updateScoreboard(){
+    scoreboardEl.textContent = `Rounds: ${roundsPlayed} • Total score: ${totalScore} • Questions left: ${isRevision ? "∞" : questionsLeft}`;
+  }
 
   /* ====== Timer functions ====== */
-  function startTimer(){
-    if(timerId) return;
-    started = true;
-    timeLeft = 120;
-    updateTimerUI();
-    timerId = setInterval(()=>{
+  function startTimer(totalSeconds){
+    if(isRevision){
+      timerWrap.classList.add('hidden');
+      return;
+    }
+    timerWrap.classList.remove('hidden');
+    timeLeft = totalSeconds;
+    updateTimerUI(totalSeconds);
+    if(timerId) clearInterval(timerId);
+    timerId = setInterval(() => {
       timeLeft--;
-      updateTimerUI();
-      if(timeLeft <= 0){ checkAnswers(); }
-    },1000);
+      updateTimerUI(totalSeconds);
+      if(timeLeft <= 0){
+        clearInterval(timerId);
+        timerId = null;
+        checkAnswers();
+        endRound("Time is up — round ended.");
+      }
+    }, 1000);
   }
-  function stopTimer(){ if(timerId){ clearInterval(timerId); timerId = null; } updateTimerUI(); }
-  function updateTimerUI(){
-    timerEl.textContent = formatTime(timeLeft);
-    const pct = Math.max(0, Math.min(100, Math.round((timeLeft/120)*100)));
+
+  function stopTimer(){
+    if(timerId){
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  function updateTimerUI(totalSeconds){
+    timerEl.textContent = formatTime(Math.max(0, timeLeft));
+    const pct = totalSeconds > 0 ? Math.max(0, Math.min(100, Math.round((timeLeft/totalSeconds)*100))) : 0;
     progressBar.style.width = pct + '%';
-    timerEl.style.color = timeLeft <= 15 ? 'var(--bad)' : (document.body.classList.contains('theme-light') ? 'var(--accent-dark)' : 'var(--accent2)');
+    timerEl.style.color = timeLeft <= 15
+      ? 'var(--bad)'
+      : (document.body.classList.contains('theme-light') ? 'var(--accent-dark)' : 'var(--accent2)');
+  }
+
+  /* ====== Round control ====== */
+  function startRound(){
+    feedbackEl.innerHTML = '';
+    if(currentMode === 'custom'){
+      const text = customSentenceInput.value.trim();
+      const techs = customTechniquesInput.value.trim();
+      if(!text || !techs){
+        feedbackEl.innerHTML = `<span style="color:var(--bad)">Add a custom sentence and its techniques before starting this mode.</span>`;
+        return;
+      }
+    }
+
+    isRevision = (currentMode === 'revision');
+    roundActive = true;
+
+    if(isRevision){
+      questionsLeft = Infinity;
+      metaText.innerHTML = "Revision mode — no timer, no limit. Type techniques and check whenever you like.";
+      timerWrap.classList.add('hidden');
+      examConfig.classList.add('hidden');
+    } else {
+      examConfig.classList.remove('hidden');
+      const qCount = Math.max(1, Math.min(50, parseInt(questionCountInput.value || '10', 10)));
+      const mins = Math.max(1, Math.min(60, parseInt(timerMinutesInput.value || '10', 10)));
+      questionCountInput.value = qCount;
+      timerMinutesInput.value = mins;
+      questionsLeft = qCount;
+      const totalSeconds = mins * 60;
+      metaText.innerHTML = `Exam mode — ${qCount} questions, ${mins} minute(s). Type techniques, then check.`;
+      startTimer(totalSeconds);
+    }
+
+    loadSentence();
+    updateScoreboard();
+  }
+
+  function endRound(message){
+    roundActive = false;
+    stopTimer();
+    feedbackEl.innerHTML += `<div class="muted" style="margin-top:6px;">${message}</div>`;
+  }
+
+  function nextSentence(){
+    if(!roundActive){
+      loadSentence();
+      return;
+    }
+    if(!isRevision && questionsLeft <= 0){
+      feedbackEl.innerHTML += `<div class="muted" style="margin-top:6px;">Round is over — press Start to begin a new one.</div>`;
+      return;
+    }
+    loadSentence();
   }
 
   /* ====== Mode switching ====== */
-  modeSelect.addEventListener('change', () => {
-    const mode = modeSelect.value;
-    currentPool = MODE_POOLS[mode] || MODE_POOLS.random;
-    roundsPlayed = 0;
-    totalScore = 0;
-    updateScoreboard();
+  function setMode(mode){
+    currentMode = mode;
+    if(mode === 'random'){
+      currentPool = MODE_POOLS.random;
+      isRevision = false;
+      metaText.innerHTML = "Random mode — pick how many questions and how long you want, then start the round.";
+      customConfig.classList.add('hidden');
+      examConfig.classList.remove('hidden');
+      timerWrap.classList.remove('hidden');
+    } else if(mode === 'handmaids'){
+      currentPool = MODE_POOLS.handmaids;
+      isRevision = false;
+      metaText.innerHTML = "Handmaid's Tale mode — exam style. Choose questions and time, then start.";
+      customConfig.classList.add('hidden');
+      examConfig.classList.remove('hidden');
+      timerWrap.classList.remove('hidden');
+    } else if(mode === 'custom'){
+      currentPool = []; // we build from inputs
+      isRevision = false;
+      metaText.innerHTML = "Custom mode — enter one sentence and its techniques, then start the round.";
+      customConfig.classList.remove('hidden');
+      examConfig.classList.remove('hidden');
+      timerWrap.classList.remove('hidden');
+    } else if(mode === 'revision'){
+      currentPool = MODE_POOLS.random;
+      isRevision = true;
+      metaText.innerHTML = "Revision mode — no timer, no question limit. Just practise and check your answers.";
+      customConfig.classList.add('hidden');
+      examConfig.classList.add('hidden');
+      timerWrap.classList.add('hidden');
+    }
+
+    stopTimer();
+    roundActive = false;
+    feedbackEl.innerHTML = '';
+    answerInput.value = '';
+    questionsLeft = isRevision ? Infinity : 0;
     loadSentence();
+    updateScoreboard();
+  }
+
+  modeTabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('.mode-tab');
+    if(!btn) return;
+    Array.from(modeTabs.querySelectorAll('.mode-tab')).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const mode = btn.dataset.mode;
+    setMode(mode);
   });
 
   /* ====== Events ====== */
   startBtn.addEventListener('click', () => {
-    if(!current) loadSentence();
-    if(!started) startTimer();
+    startRound();
   });
+
   checkBtn.addEventListener('click', () => {
-    if(!started) return;
     checkAnswers();
   });
+
   nextBtn.addEventListener('click', () => {
-    loadSentence();
+    nextSentence();
+  });
+
+  answerInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      checkAnswers();
+    }
   });
 
   /* ====== Init ====== */
-  renderTechniques();
-  loadSentence();
+  setMode('random');
   updateScoreboard();
 </script>
 </body>
 </html>
+
