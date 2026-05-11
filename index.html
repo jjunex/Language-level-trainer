@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Language Technique Trainer — Modes</title>
+<style>
+  :root{
+    --bg-dark-1: #071028;
+    --bg-dark-2: #071a2a;
+    --card-dark: rgba(255,255,255,0.02);
+    --text-light: #e6eef6;
+    --muted-light: #9aa4b2;
+    --accent: #06b6d4;
+    --accent2: #7c3aed;
+    --good: #16a34a;
+    --bad: #ef4444;
+
+    --bg-light-1: #ffffff;
+    --bg-light-2: #f6f8fb;
+    --card-light: #ffffff;
+    --text-dark: #0b1220;
+    --muted-dark: #5b6b7a;
+    --accent-dark: #0b84a5;
+    --accent2-dark: #6b46c1;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:20px;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    display:flex;
+    justify-content:center;
+    transition: background-color .25s ease, color .25s ease;
+  }
+
+  body.theme-dark{
+    background: linear-gradient(180deg,var(--bg-dark-1), var(--bg-dark-2));
+    color: var(--text-light);
+  }
+  body.theme-dark .wrap{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); }
+  body.theme-dark .muted{ color: var(--muted-light); }
+
+  body.theme-light{
+    background: linear-gradient(180deg,var(--bg-light-1), var(--bg-light-2));
+    color: var(--text-dark);
+  }
+  body.theme-light .wrap{ background: var(--card-light); border:1px solid rgba(11,18,32,0.06); }
+  body.theme-light .muted{ color:var(--muted-dark); }
+
+  .wrap{
+    width:100%;
+    max-width:980px;
+    border-radius:12px;
+    padding:18px;
+    box-shadow: 0 10px 30px rgba(2,6,23,0.45);
+    transition: box-shadow .25s ease, background .25s ease;
+  }
+
+  header{ display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+  h1{ margin:0; font-size:1.15rem; }
+  .subtitle{ font-size:0.95rem; margin-top:4px; color:var(--muted-light); }
+  body.theme-light .subtitle{ color:var(--muted-dark); }
+
+  .top-left{ display:flex; gap:10px; align-items:center; }
+  .mode-select{
+    padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,0.04);
+    background:transparent; color:var(--muted-light); font-weight:700; cursor:pointer;
+  }
+  body.theme-light .mode-select{ border:1px solid rgba(11,18,32,0.06); color:var(--muted-dark); background:#fff; }
+
+  .top-right{ margin-left:auto; display:flex; gap:10px; align-items:center; }
+
+  .theme-toggle{
+    display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none;
+    background:transparent; border:1px solid rgba(255,255,255,0.04); padding:6px 10px; border-radius:10px;
+    color:var(--muted-light); font-weight:700;
+  }
+  body.theme-light .theme-toggle{ border:1px solid rgba(11,18,32,0.06); color:var(--muted-dark); }
+
+  .card{ border-radius:10px; padding:16px; margin-top:8px; transition: background .25s ease; }
+
+  .meta{ color:var(--muted-light); font-size:0.95rem; margin-bottom:10px; }
+  body.theme-light .meta{ color:var(--muted-dark); }
+
+  .sentence{
+    background: rgba(255,255,255,0.01);
+    padding:14px;
+    border-radius:10px;
+    font-size:1.05rem;
+    line-height:1.45;
+    border:1px solid rgba(255,255,255,0.03);
+    transition: background .25s ease, color .25s ease;
+  }
+  body.theme-light .sentence{ background: #fbfdff; border:1px solid rgba(11,18,32,0.04); }
+
+  .techniques{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .tech{
+    padding:7px 10px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.04);
+    background:transparent;
+    color:var(--muted-light);
+    cursor:pointer;
+    font-weight:700;
+    font-size:0.92rem;
+    transition: transform .12s ease, background .12s ease, color .12s ease, box-shadow .12s ease;
+    opacity:0.9;
+  }
+  body.theme-light .tech{ color:var(--muted-dark); border:1px solid rgba(11,18,32,0.04); }
+  .tech:hover{ transform: translateY(-3px); }
+  .tech.selected{ background: linear-gradient(90deg,var(--accent),var(--accent2)); color:#012; border:0; box-shadow:0 8px 20px rgba(12,18,40,0.25); }
+
+  .controls{ display:flex; gap:12px; align-items:center; margin-top:14px; }
+
+  .btn{
+    padding:10px 14px; border-radius:12px; border:0; cursor:pointer; font-weight:800;
+    box-shadow: 0 8px 20px rgba(2,6,23,0.25);
+    transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  }
+
+  /* Start button: distinct orange gradient */
+  .btn.start{
+    background: linear-gradient(90deg,#ff7a18,#ffb347);
+    color:#fff;
+  }
+  body.theme-light .btn.start{ background: linear-gradient(90deg,#ff8a2b,#ffc87c); color:#fff; }
+
+  /* Check button: prominent green */
+  .btn.check{
+    background: linear-gradient(90deg,#16a34a,#10b981);
+    color:#fff;
+    padding:12px 18px;
+    font-size:1rem;
+    border-radius:14px;
+  }
+
+  /* New sentence button: prominent blue */
+  .btn.next{
+    background: linear-gradient(90deg,#2563eb,#06b6d4);
+    color:#fff;
+    padding:12px 18px;
+    font-size:1rem;
+    border-radius:14px;
+  }
+
+  .techniques { margin-bottom:6px; }
+  .tech { opacity:0.85; font-size:0.92rem; padding:6px 9px; }
+
+  .timer-wrap{ margin-left:auto; display:flex; gap:10px; align-items:center; }
+  .timer{ font-weight:800; padding:8px 12px; border-radius:10px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); color:var(--accent2); }
+  body.theme-light .timer{ background: #fff; border:1px solid rgba(11,18,32,0.04); color:var(--accent-dark); }
+
+  .progress{ height:8px; background: rgba(255,255,255,0.03); border-radius:999px; overflow:hidden; width:220px; }
+  .progress > i{ display:block; height:100%; background: linear-gradient(90deg,var(--accent),var(--accent2)); width:0%; transition: width .3s linear; }
+
+  #feedback{ margin-top:12px; font-size:0.98rem; color:var(--muted-light); }
+  body.theme-light #feedback{ color:var(--muted-dark); }
+  .scoreboard{ margin-top:10px; color:var(--muted-light); font-weight:700; }
+  body.theme-light .scoreboard{ color:var(--muted-dark); }
+
+  @media (max-width:640px){
+    .controls{ flex-wrap:wrap; }
+    .timer-wrap{ width:100%; justify-content:flex-end; }
+    .progress{ width:120px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <header>
+      <div class="top-left">
+        <label for="modeSelect" style="font-weight:800;margin-right:6px">Mode</label>
+        <select id="modeSelect" class="mode-select" aria-label="Choose game mode">
+          <option value="random">Random</option>
+          <option value="handmaids">Handmaid's Tale</option>
+          <option value="duffy">Duffy poems</option>
+          <option value="paris">Paris anthology</option>
+        </select>
+      </div>
+
+      <div>
+        <h1 style="margin:0">Language Technique Trainer</h1>
+      </div>
+
+      <div class="top-right" aria-hidden="false">
+        <button id="themeToggle" class="theme-toggle" aria-pressed="false" title="Toggle light / dark mode">
+          🌙 <span id="themeLabel">Dark</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="card" role="region" aria-label="Trainer card">
+      <div class="meta">Start the round, then click any technique you spot in the sentence. You have <strong>2 minutes</strong> per question.</div>
+
+      <div class="sentence" id="sentence" aria-live="polite">Loading…</div>
+
+      <div class="techniques" id="techniques" aria-label="Technique buttons"></div>
+
+      <div class="controls" role="toolbar" aria-label="Game controls">
+        <button id="startBtn" class="btn start" aria-label="Start round">Start</button>
+
+        <button id="checkBtn" class="btn check" aria-label="Check answers">Check</button>
+        <button id="nextBtn" class="btn next" aria-label="New sentence">New sentence</button>
+
+        <div class="timer-wrap" aria-hidden="false">
+          <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+          <div class="timer" id="timer" aria-live="polite">02:00</div>
+        </div>
+      </div>
+
+      <div id="feedback" role="status"></div>
+      <div class="scoreboard" id="scoreboard" aria-live="polite">Rounds: 0 • Total score: 0</div>
+    </div>
+  </div>
+
+<script>
+  /* ====== Technique list (kept compact) ====== */
+  const QUIZLET_TERMS = [
+    "Sibilant alliteration 's'",
+    "Fricative alliteration 'f' 'v'",
+    "Plosive alliteration 'p' 'b'",
+    "Dental alliteration 'd' 't'",
+    "Guttural alliteration 'g' 'c' 'k'",
+    "Assonance (vowel repetition)",
+    "Aphorism",
+    "Synaesthesia",
+    "Direct Address",
+    "Juxtaposition",
+    "Neologism",
+    "Grice: quantity",
+    "Grice: quality",
+    "Grice: relevance",
+    "Grice: manner",
+    "Lexical onomatopoeia",
+    "Superlative",
+    "Prosodic stress",
+    "Sibilance (soft 's' sounds)",
+    "Alliteration (general)",
+    "Metaphor",
+    "Simile",
+    "Personification",
+    "Oxymoron",
+    "Semantic field",
+    "Asyndetic list",
+    "Syndetic list",
+    "Person deixis",
+    "Spatial deixis",
+    "Temporal deixis",
+    "Proximal deixis",
+    "Distal deixis",
+    "Graphology",
+    "Phonology",
+    "Lexis",
+    "Semantics (literal meaning)",
+    "Pragmatics (implied meaning)",
+    "Verb phrase",
+    "Noun phrase",
+    "Zoomorphism",
+    "Anthropomorphism",
+    "Hendiadys",
+    "Hyperlage",
+    "Jargon",
+    "Rebus",
+    "Premodifying adj.",
+    "Euphemism",
+    "Dysphemism",
+    "Idiom"
+  ];
+
+  /* ====== Mode-specific sentence pools ====== */
+  const MODE_POOLS = {
+    random: [
+      {text:"He eats, sleeps, breathes and dreams about the game.", techniques:["Asyndetic list"]},
+      {text:"We need bread and milk and eggs and flour for the shop.", techniques:["Syndetic list"]},
+      {text:"I'll be there tomorrow; you'll see me then.", techniques:["Person deixis","Temporal deixis"]},
+      {text:"This book on the table belongs to her.", techniques:["Proximal deixis","Noun phrase"]},
+      {text:"The poster used bold font and wide spacing to grab attention.", techniques:["Graphology","Lexis"]},
+      {text:"Softly the sea sighed and the shore answered with a hush.", techniques:["Sibilant alliteration 's'","Personification"]},
+      {text:"They called the app 'Moodify' and the name caught on quickly.", techniques:["Neologism","Lexis"]},
+      {text:"The cat moved like a small king, proud and slow.", techniques:["Zoomorphism","Anthropomorphism"]},
+      {text:"She said 'fast and furious' to join two strong ideas.", techniques:["Hendiadys","Lexis"]},
+      {text:"The kettle hissed until the whistle broke the quiet morning.", techniques:["Lexical onomatopoeia","Phonology"]},
+      {text:"They called his dismissal 'a change in staffing' — a gentle euphemism.", techniques:["Euphemism","Pragmatics (implied meaning)"]},
+      {text:"He was labelled 'a troublemaker' — a harsh dysphemism that stuck.", techniques:["Dysphemism","Pragmatics (implied meaning)"]},
+      {text:"'If it ain't broke, don't fix it' — an old aphorism people repeat.", techniques:["Aphorism","Lexis"]},
+      {text:"She told him to 'break a leg' before the show — a common idiom.", techniques:["Idiom","Direct Address"]},
+      {text:"The advert promised the best, the brightest, the boldest.", techniques:["Superlative","Triplet"]},
+      {text:"She used words like weapons: precise, pointed, sharp.", techniques:["Premodifying adj.","Alliteration (general)"]},
+      {text:"The bell rang once and the town fell silent.", techniques:["Lexical onomatopoeia","Pathetic fallacy"]},
+      {text:"The old house groaned as if remembering other lives.", techniques:["Personification","Zoomorphism"]},
+      {text:"The slogan used stress in speech: 'Buy now!'", techniques:["Prosodic stress","Graphology"]}
+    ],
+
+    /* Handmaid's Tale mode: replaced with the user-provided lines (kept as practice sentences).
+       Each sentence is tagged with plausible techniques for spotting. */
+    handmaids: [
+      {text: `A chair, a table, a lamp. Above, on the white ceiling, a relief ornament in the shape of a wreath, and in the center of it a blank space, plastered over, like the place in a face where an eye has been taken out.`, techniques:["Asyndetic list","Imagery","Simile"]},
+      {text: `We produce our passes, from the pockets of our red cloaks. They are inspected, feathered with the light of the sun, and returned. We walk on. The sidewalk is red brick. Here and there are patches of old snow, like dried spit.`, techniques:["Verb phrase","Graphology","Simile"]},
+      {text: `The night is mine, my own time, to do with as I will, as long as I am quiet. As long as I don't move. As long as I lie still. The night is my time out. Where should I go? Somewhere good.`, techniques:["Repetition","Anaphora","Direct Address"]},
+      {text: `Books and books and books, right out in plain view, no locks, no boxes. No one was there, no one to inhibit me.`, techniques:["Repetition","Asyndetic list","Premodifying adj."]},
+      {text: `There is more than one kind of freedom, said Aunt Lydia. Freedom to and freedom from. In the days of anarchy, it was freedom to. Now you are being given freedom from. Don't underrate it.`, techniques:["Direct Address","Aphorism","Juxtaposition"]},
+      {text: `Thinking can hurt your chances, and I intend to last. I know why there is no glass, in these windows, in front of this picture of blue iris, and why the window opens only partly and why the glass in it is shatterproof. It isn’t running away they’re afraid of. We wouldn't get far. It’s those other escapes, the ones you can open in yourself, given a cutting edge.`, techniques:["Pragmatics (implied meaning)","Noun phrase","Semantic field"]},
+      {text: `The heads are the heads of snowmen, with the features painted on by a child. With a red felt pen, to make them look like real people. The heads are zeroes.`, techniques:["Metaphor","Juxtaposition","Graphology"]},
+      {text: `We lived, as usual, by ignoring. Like today’s newspapers. It was settled in the cupboards, it was in the way we took our coffee, it was in the skin of our hands. Waste not want not. I am not being wasted. Why do I want?`, techniques:["Anaphora","Aphorism","Pragmatics (implied meaning)"]},
+      {text: `Tell, rather than write, because I have nothing to write with and writing is in any case forbidden.`, techniques:["Direct Address","Pragmatics (implied meaning)","Verb phrase"]},
+      {text: `Blessed are the meek. She didn’t go on to say anything about inheriting the earth.`, techniques:["Aphorism","Irony","Juxtaposition"]},
+      {text: `Under His Eye.`, techniques:["Graphology","Direct Address","Pragmatics (implied meaning)"]},
+      {text: `I hunger to commit the act of touch.`, techniques:["Direct Address","Pragmatics (implied meaning)","Verb phrase"]},
+      {text: `My self is a thing I must now compose, as one composes a speech. What I must present is a made thing, not something born.`, techniques:["Metaphor","Noun phrase","Premodifying adj."]},
+      {text: `I move my foot in the bed, back and forth, before and after.`, techniques:["Repetition","Verb phrase","Asyndetic list"]},
+      {text: `Moira was like an elevator with open sides. She made us dizzy. Already we were losing the taste for freedom, already we were finding these walls secure.`, techniques:["Simile","Repetition","Juxtaposition"]},
+      {text: `He was reachable, untouchable.`, techniques:["Oxymoron","Juxtaposition","Premodifying adj."]},
+      {text: `A rat in a maze is free to go anywhere, as long as it stays inside the maze.`, techniques:["Metaphor","Juxtaposition","Semantic field"]},
+      {text: `Nolite te bastardes carborundorum.`, techniques:["Direct Address","Idiom","Graphology"]},
+      {text: `We are two-legged wombs, that’s all: sacred vessels, ambulatory chalices.`, techniques:["Metaphor","Juxtaposition","Premodifying adj."]},
+      {text: `I am a generator, individual, edible.`, techniques:["Asyndetic list","Noun phrase","Premodifying adj."]},
+      {text: `Each month I watch for blood, fearfully, for when it comes it means failure.`, techniques:["Verb phrase","Semantic field","Pragmatics (implied meaning)"]},
+      {text: `I’m a cloud, congealed around a central object, the shape of a pear, which is hard and more real than I am and glows red within its translucent shell.`, techniques:["Metaphor","Imagery","Synaesthesia"]},
+      {text: `Give me children, or else I die. There are only women who are fruitful and women who are barren, that's the law.`, techniques:["Aphorism","Juxtaposition","Pragmatics (implied meaning)"]},
+      {text: `The small person inside me, who would like to say I am here, but has no voice.`, techniques:["Metaphor","Noun phrase","Pragmatics (implied meaning)"]},
+      {text: `Everything they taught at the Red Centre was true: I am a natural resource.`, techniques:["Aphorism","Metaphor","Semantic field"]},
+      {text: `I sink down into my body as into a swamp, fenland, where only I know the way. My body seems outdated.`, techniques:["Metaphor","Imagery","Premodifying adj."]},
+      {text: `To be a man, watched by women. It must be entirely strange. To have them looking at him all the time, as if he’s a fountain, a trickler.`, techniques:["Juxtaposition","Simile","Semantic field"]},
+      {text: `The seed of the fruit, the promise of the future. It’s not the husband’s, it’s the state’s.`, techniques:["Metaphor","Juxtaposition","Semantic field"]}
+    ],
+
+    duffy: [
+      {text:"She kept his letters in a box, each one a small, bright lie.", techniques:["Metaphor","Juxtaposition","Noun phrase"]},
+      {text:"The city hummed; she walked through it like a ghost.", techniques:["Personification","Simile","Phonology"]},
+      {text:"He said her name and the room filled with memory.", techniques:["Direct Address","Synaesthesia","Semantic field"]},
+      {text:"She stitched the past into the present, thread by careful thread.", techniques:["Metaphor","Verb phrase","Anaphora"]},
+      {text:"The mirror showed a face she almost recognised.", techniques:["Juxtaposition","Imagery","Pragmatics (implied meaning)"]},
+      {text:"She used small jokes to soften the sharp edges of truth.", techniques:["Euphemism","Premodifying adj.","Lexis"]},
+      {text:"The rain tapped like a slow, patient hand on the window.", techniques:["Lexical onomatopoeia","Simile","Personification"]}
+    ],
+
+    paris: [
+      {text:"The river carried lights like coins along its dark skin.", techniques:["Simile","Imagery","Semantic field"]},
+      {text:"Cafes spilled warmth onto the pavement; voices rose and fell.", techniques:["Personification","Sibilance (soft 's' sounds)","Graphology"]},
+      {text:"He watched the bridge, patient as a sentinel.", techniques:["Simile","Metaphor","Noun phrase"]},
+      {text:"The postcard said 'wish you were here' in a neat, small hand.", techniques:["Direct Address","Graphology","Pragmatics (implied meaning)"]},
+      {text:"Autumn leaves gathered like small, tired crowds on the quay.", techniques:["Simile","Personification","Semantic field"]},
+      {text:"She ordered coffee and the barista smiled, a practiced kindness.", techniques:["Premodifying adj.","Lexis","Pragmatics (implied meaning)"]}
+    ]
+  };
+
+  /* ====== State & DOM refs ====== */
+  let currentPool = MODE_POOLS.random;
+  let current = null;
+  let selected = new Set();
+  let totalScore = 0;
+  let roundsPlayed = 0;
+  let timerId = null;
+  let timeLeft = 120;
+  let started = false;
+
+  const sentenceEl = document.getElementById('sentence');
+  const techniquesEl = document.getElementById('techniques');
+  const feedbackEl = document.getElementById('feedback');
+  const startBtn = document.getElementById('startBtn');
+  const checkBtn = document.getElementById('checkBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const timerEl = document.getElementById('timer');
+  const progressBar = document.getElementById('progressBar');
+  const scoreboardEl = document.getElementById('scoreboard');
+  const modeSelect = document.getElementById('modeSelect');
+  const themeToggle = document.getElementById('themeToggle');
+  const themeLabel = document.getElementById('themeLabel');
+
+  /* ====== Theme handling (light/dark) ====== */
+  function applyTheme(theme){
+    document.body.classList.remove('theme-dark','theme-light');
+    document.body.classList.add(theme === 'light' ? 'theme-light' : 'theme-dark');
+    localStorage.setItem('trainerTheme', theme);
+    themeToggle.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+    themeLabel.textContent = theme === 'light' ? 'Light' : 'Dark';
+  }
+  const savedTheme = localStorage.getItem('trainerTheme') || 'dark';
+  applyTheme(savedTheme);
+  themeToggle.addEventListener('click', () => {
+    const newTheme = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
+    applyTheme(newTheme);
+  });
+
+  /* ====== Helpers ====== */
+  function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function formatTime(s){ return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
+
+  /* ====== Render technique buttons ====== */
+  function renderTechniques(){
+    techniquesEl.innerHTML = '';
+    QUIZLET_TERMS.forEach((label, idx) => {
+      const id = 'q' + idx;
+      const btn = document.createElement('button');
+      btn.className = 'tech';
+      btn.textContent = label;
+      btn.dataset.id = id;
+      btn.type = 'button';
+      btn.onclick = () => {
+        if(!started) return;
+        if(selected.has(id)){ selected.delete(id); btn.classList.remove('selected'); }
+        else { selected.add(id); btn.classList.add('selected'); }
+      };
+      techniquesEl.appendChild(btn);
+    });
+  }
+
+  /* ====== Load sentence from current pool ====== */
+  function loadSentence(){
+    selected.clear();
+    feedbackEl.innerHTML = '';
+    stopTimer();
+    started = false;
+    timeLeft = 120;
+    updateTimerUI();
+    current = pickRandom(currentPool);
+    sentenceEl.textContent = current.text;
+    renderTechniques();
+  }
+
+  /* ====== Scoring & feedback ====== */
+  function normalizeLabel(label){
+    return label.toLowerCase().replace(/[^a-z0-9\s']/g,'').trim();
+  }
+
+  function showFeedback(score, wrong, missed){
+    feedbackEl.innerHTML = `
+      <div><strong style="color:var(--good)">Correct picked:</strong> ${score}</div>
+      <div><strong style="color:var(--bad)">Wrong picks:</strong> ${wrong.length ? wrong.join(", ") : "None"}</div>
+      <div class="muted">Missed techniques (author tags): ${missed.length ? missed.join(", ") : "None"}</div>
+      <div class="muted">All techniques in this sentence: ${current.techniques.join(", ")}</div>
+    `;
+  }
+
+  function checkAnswers(){
+    if(!current) return;
+    const correctTags = current.techniques.map(t => normalizeLabel(t));
+    let score = 0, wrong = [];
+    selected.forEach(id => {
+      const label = normalizeLabel(QUIZLET_TERMS[parseInt(id.slice(1))] || '');
+      const matched = correctTags.some(tag => {
+        if (!tag) return false;
+        if (label.includes(tag) || tag.includes(label)) return true;
+        const tagWords = tag.split(/\s+/);
+        return tagWords.some(w => w && label.includes(w));
+      });
+      if(matched) score++;
+      else wrong.push(QUIZLET_TERMS[parseInt(id.slice(1))]);
+    });
+    const missed = current.techniques.filter(t => {
+      const tag = normalizeLabel(t);
+      const matchedBySelection = Array.from(selected).some(id => {
+        const label = normalizeLabel(QUIZLET_TERMS[parseInt(id.slice(1))] || '');
+        if (!label) return false;
+        if (label.includes(tag) || tag.includes(label)) return true;
+        const tagWords = tag.split(/\s+/);
+        return tagWords.some(w => w && label.includes(w));
+      });
+      return !matchedBySelection;
+    });
+    totalScore += score;
+    roundsPlayed++;
+    showFeedback(score, wrong, missed);
+    updateScoreboard();
+    stopTimer();
+    started = false;
+  }
+
+  function updateScoreboard(){ scoreboardEl.textContent = `Rounds: ${roundsPlayed} • Total score: ${totalScore}`; }
+
+  /* ====== Timer functions ====== */
+  function startTimer(){
+    if(timerId) return;
+    started = true;
+    timeLeft = 120;
+    updateTimerUI();
+    timerId = setInterval(()=>{
+      timeLeft--;
+      updateTimerUI();
+      if(timeLeft <= 0){ checkAnswers(); }
+    },1000);
+  }
+  function stopTimer(){ if(timerId){ clearInterval(timerId); timerId = null; } updateTimerUI(); }
+  function updateTimerUI(){
+    timerEl.textContent = formatTime(timeLeft);
+    const pct = Math.max(0, Math.min(100, Math.round((timeLeft/120)*100)));
+    progressBar.style.width = pct + '%';
+    timerEl.style.color = timeLeft <= 15 ? 'var(--bad)' : (document.body.classList.contains('theme-light') ? 'var(--accent-dark)' : 'var(--accent2)');
+  }
+
+  /* ====== Mode switching ====== */
+  modeSelect.addEventListener('change', () => {
+    const mode = modeSelect.value;
+    currentPool = MODE_POOLS[mode] || MODE_POOLS.random;
+    roundsPlayed = 0;
+    totalScore = 0;
+    updateScoreboard();
+    loadSentence();
+  });
+
+  /* ====== Events ====== */
+  startBtn.addEventListener('click', () => {
+    if(!current) loadSentence();
+    if(!started) startTimer();
+  });
+  checkBtn.addEventListener('click', () => {
+    if(!started) return;
+    checkAnswers();
+  });
+  nextBtn.addEventListener('click', () => {
+    loadSentence();
+  });
+
+  /* ====== Init ====== */
+  renderTechniques();
+  loadSentence();
+  updateScoreboard();
+</script>
+</body>
+</html>
